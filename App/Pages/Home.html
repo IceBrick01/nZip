@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <title>nZip | Home</title>
+    <meta name="title" content="nZip | Home">
+    <meta name="description" content="Easily download the doujinshi you like.">
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="icon" href="/Images/icon.ico">
+    <link rel="stylesheet" href="/Styles/Basic.css">
+  </head>
+
+  <body style="display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: var(--background_color); margin: 0px; width: 100vw; height: 100vh">
+    <div style="position: fixed; display: flex; justify-content: center; align-items: center; left: 0px; top: 0px; width: 100vw; height: 100vh; z-index: -1">
+      <h1 id="text_sauce" class="text" style="user-select: none; font-size: 20rem; opacity: 0.075"></h1>
+    </div>
+
+    <div style="margin-left: 1rem; margin-right: 1rem">
+      <h1 class="text" style="font-size: 2.75rem; white-space: nowrap; margin: 0px">nZip</h1>
+      <h1 class="text" style="font-size: 1.25rem; margin: 0px; margin-bottom: 1rem">The place to download the doujinshi you like.</h1>
+      <input id="input_sauce" type="text" placeholder="The Sauce" style="outline: none; background-color: var(--background_color); color: var(--text_color); border: 0.2rem solid var(--text_color); border-radius: 0.25rem; font-size: 1.25rem; font-weight: bold; padding: 0.5rem 0.5rem; width: calc(100% - 1.5rem)">
+    </div>
+    <div style="position: fixed; display: flex; font-size: 1rem; bottom: 0.6rem; width: 100vw">
+      <h1 class="text" style="font-size: 1rem; margin-left: 1rem; margin-right: 1rem">Made by <a href="https://github.com/IceBrick01" target="_blank">IceBrick</a> and <a href="https://github.com/LmanTW" target="_blank">LmanTW</a> with ❤️</h1>
+      <div style="flex: 1"></div>
+      <h1 class="text" style="font-size: 1rem; white-space: nowrap; margin-right: 1rem">nZip {version}</h1>
+    </div>
+  </body>
+
+  <script>
+    const input_sauce = document.getElementById('input_sauce')
+    const text_sauce = document.getElementById('text_sauce')
+
+    input_sauce.onchange = () => {
+      if (input_sauce.value.substring(0, 22) === 'https://nhentai.net/g/') window.location.replace(`/g/${input_sauce.value.substring(22)}`)
+      else if (!isNaN(parseInt(input_sauce.value))) window.location.href = `/g/${input_sauce.value}`
+    }
+
+    let target = Math.round(Math.random() * 999999)
+    let current = 0
+
+    setInterval(() => {
+      current += (target - current) / 40
+      text_sauce.innerHTML = Math.round(current).toString().padStart(6, '0')
+
+      if (Math.abs(target - current) < 0.1) target = Math.round(Math.random() * 999999)
+    }, 10)
+  </script>
+</html>
