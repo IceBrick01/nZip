@@ -2,6 +2,9 @@
 
 nZip is a convenient tool for downloading doujinshi from nhentai.net as a zip archive.
 
+> [!WARNING]
+> This project is not affiliated with or endorsed by nhentai.net. Please use responsibly.
+
 ## How to Use
 
 1. **Modify the URL**: To download a doujinshi, simply replace `.net` with `.zip` in the URL. For example, to download the doujinshi at [https://nhentai.net/g/228922](https://nhentai.net/g/228922), you would navigate to [https://nhentai.zip/g/228922](https://nhentai.zip/g/228922).
