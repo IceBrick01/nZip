@@ -20,7 +20,7 @@ export default (host: string, port: number, apiHost: string, imageHost: string, 
     
     const response = await (await fetch(`${apiHost}/g/${id}`)).json()
 
-    if (response.status === false) return sendFile(res, path.resolve(__dirname, '../App/Pages/Error.html'), { error: 'We cannot find your doujinshi, maybe try going back to <a href="/">home</a> and try another one?' })
+    if (response.error) return sendFile(res, path.resolve(__dirname, '../App/Pages/Error.html'), { error: 'We cannot find your doujinshi, maybe try going back to <a href="/">home</a> and try another one?' })
     
     const extension = response.images.pages[0].t === 'j' ? 'jpg' : response.images.pages[0].t === 'g' ? 'gif' : 'png'
 

@@ -45,7 +45,7 @@ const server = http.createServer(async (req, res) => {
 
   if (!id) {
     res.writeHead(400, { 'Content-Type': 'application/json' })
-    res.end(JSON.stringify({ status: false, reason: 'Missing id parameter' }))
+    res.end(JSON.stringify({ error: 'Missing id parameter' }))
     return
   }
 
@@ -56,7 +56,7 @@ const server = http.createServer(async (req, res) => {
     handleRequest(urlParts, jsonData, res)
   } catch {
     res.writeHead(500, { 'Content-Type': 'application/json' })
-    res.end(JSON.stringify({ status: false, reason: 'Internal Server Error' }))
+    res.end(JSON.stringify({ error: 'Internal Server Error' }))
   }
 })
 
@@ -98,7 +98,7 @@ function handleRequest(urlParts: string[], jsonData: GalleryData, res: http.Serv
       break;
     default:
       res.writeHead(404, { 'Content-Type': 'application/json' })
-      res.end(JSON.stringify({ status: false, reason: 'Not Found' }))
+      res.end(JSON.stringify({ error: 'Not Found' }))
   }
 }
 
