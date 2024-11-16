@@ -6,11 +6,14 @@
     <meta name="title" content="nZip | {id}">
     <meta name="description" content="{title}">
 
+    <meta name="og:title" content="nZip | {id}">
+    <meta name="og:description" content="{title}">
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="icon" href="/Images/icon.ico">
-    <link rel="stylesheet" href="/Styles/Basic.css">
+    <link rel="stylesheet" href="/Styles/Main.css">
   </head>
 
   <body style="display: flex; flex-direction: column; justify-content: center; align-items: center; background-color: var(--background_color); margin: 0px; width: 100vw; height: 100vh">
@@ -21,6 +24,7 @@
         <div id="logs" style="border: 0.2rem solid var(--text_color); border-radius: 0.25rem; margin-bottom: 0.5rem; width: 100%; height: 20rem; overflow-y: scroll">
           <h1 id="text_logs" class="text" style="font-size: 1rem; font-weight: bold; margin-left: 1rem; margin-top: 0.9rem; margin-bottom: 0.9rem">Connecting to the server...</h1>
         </div>
+        <a id="download_button" class="button" target="_blank" style="font-size: 1.25rem; padding: 0.5rem 1rem;">Preparing download...</a>
       </div>
     </div>
   </body>

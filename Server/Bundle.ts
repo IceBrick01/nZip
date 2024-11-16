@@ -6,7 +6,7 @@ import fs from 'fs'
 export default async (): Promise<void> => {
   if (fs.existsSync(path.join(__dirname, 'Cache', 'Scripts'))) fs.rmSync(path.join(__dirname, 'Cache', 'Scripts'),{ recursive: true })
 
-  fs.mkdirSync(path.join(__dirname, 'Cache', 'Scripts'))
+  fs.mkdirSync(path.join(__dirname, 'Cache', 'Scripts'), { recursive: true })
 
   for (const fileName of fs.readdirSync(path.resolve(__dirname, '../App/Scripts'))) {
     try {

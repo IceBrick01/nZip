@@ -1,3 +1,5 @@
 node_modules
+package-lock.json
+bun.lockb
 
-Server/Cache/*
+Server/Cache/
