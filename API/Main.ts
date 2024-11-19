@@ -41,7 +41,7 @@ function handleResponse(res: http.IncomingMessage, resolve: (data: string) => vo
 
 const server = http.createServer(async (req, res) => {
   const urlParts = req.url?.split('/')
-  const id = urlParts?.[2]
+  const id = urlParts?.[3] || urlParts?.[2]
 
   if (!id) {
     res.writeHead(400, { 'Content-Type': 'application/json' })
@@ -54,7 +54,8 @@ const server = http.createServer(async (req, res) => {
     const jsonData: GalleryData = JSON.parse(rawData)
 
     handleRequest(urlParts, jsonData, res)
-  } catch {
+  } catch (error) {
+    console.log(error)
     res.writeHead(500, { 'Content-Type': 'application/json' })
     res.end(JSON.stringify({ error: 'Internal Server Error' }))
   }
@@ -67,35 +68,49 @@ function handleRequest(urlParts: string[], jsonData: GalleryData, res: http.Serv
 
   switch (urlParts[1]) {
     case 'g':
-      res.writeHead(200, { 'Content-Type': 'application/json' })
-      res.end(JSON.stringify(jsonData))
+      if (urlParts[2]) {
+        res.writeHead(200, { 'Content-Type': 'application/json' })
+        res.end(JSON.stringify(jsonData))
+      } else {
+        res.writeHead(404, { 'Content-Type': 'application/json' })
+        res.end(JSON.stringify({ error: 'Not Found' }))
+      }
+      break
+    case 'api':
+      if (urlParts[2] === 'gallery' && urlParts[3]) {
+        res.writeHead(200, { 'Content-Type': 'application/json' })
+        res.end(JSON.stringify(jsonData))
+      } else {
+        res.writeHead(404, { 'Content-Type': 'application/json' })
+        res.end(JSON.stringify({ error: 'Not Found' }))
+      }
       break
     case 'pages':
       const pages = jsonData.images.pages.map((page, index) => {
-        const extension = page.t === 'j' ? 'jpg' : page.t === 'g' ? 'gif' : 'png';
-        return `${baseUrl}/${index + 1}.${extension}`;
-      });
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify(pages));
-      break;
+        const extension = page.t === 'j' ? 'jpg' : page.t === 'g' ? 'gif' : page.t === 'w' ? 'webp' : 'png'
+        return `${baseUrl}/${index + 1}.${extension}`
+      })
+      res.writeHead(200, { 'Content-Type': 'application/json' })
+      res.end(JSON.stringify(pages))
+      break
     case 'pages-t':
       const pagesThumbnails = jsonData.images.pages.map((page, index) => {
-        const extension = page.t === 'j' ? 'jpg' : page.t === 'g' ? 'gif' : 'png';
-        return `${baseUrlThumbnail}/${index + 1}t.${extension}`;
-      });
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify(pagesThumbnails));
-      break;
+        const extension = page.t === 'j' ? 'jpg' : page.t === 'g' ? 'gif' : page.t === 'w' ? 'webp' : 'png'
+        return `${baseUrlThumbnail}/${index + 1}t.${extension}`
+      })
+      res.writeHead(200, { 'Content-Type': 'application/json' })
+      res.end(JSON.stringify(pagesThumbnails))
+      break
     case 'cover':
-      const cover = `${baseUrlThumbnail}/cover.${jsonData.images.cover.t === 'j' ? 'jpg' : jsonData.images.cover.t === 'g' ? 'gif' : 'png'}`;
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify([cover]));
-      break;
+      const cover = `${baseUrlThumbnail}/cover.${jsonData.images.cover.t === 'j' ? 'jpg' : jsonData.images.cover.t === 'g' ? 'gif' : jsonData.images.cover.t === 'w' ? 'webp' : 'png'}`
+      res.writeHead(200, { 'Content-Type': 'application/json' })
+      res.end(JSON.stringify([cover]))
+      break
     case 'cover-t':
-      const coverThumbnail = `${baseUrlThumbnail}/thumb.${jsonData.images.thumbnail.t === 'j' ? 'jpg' : jsonData.images.thumbnail.t === 'g' ? 'gif' : 'png'}`;
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify([coverThumbnail]));
-      break;
+      const coverThumbnail = `${baseUrlThumbnail}/thumb.${jsonData.images.thumbnail.t === 'j' ? 'jpg' : jsonData.images.thumbnail.t === 'g' ? 'gif' : jsonData.images.thumbnail.t === 'w' ? 'webp' : 'png'}`
+      res.writeHead(200, { 'Content-Type': 'application/json' })
+      res.end(JSON.stringify([coverThumbnail]))
+      break
     default:
       res.writeHead(404, { 'Content-Type': 'application/json' })
       res.end(JSON.stringify({ error: 'Not Found' }))
@@ -103,5 +118,5 @@ function handleRequest(urlParts: string[], jsonData: GalleryData, res: http.Serv
 }
 
 server.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}/`)
+  console.log(`Server running at http://localhost:${PORT}/`)
 })

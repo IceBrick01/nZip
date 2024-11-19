@@ -1,5 +1,5 @@
 import { build } from 'tsup'
-import path from 'path'
+import path, { win32, posix } from 'path'
 import fs from 'fs'
 
 // Bundle The Scripts
@@ -11,7 +11,7 @@ export default async (): Promise<void> => {
   for (const fileName of fs.readdirSync(path.resolve(__dirname, '../App/Scripts'))) {
     try {
       await build({
-        entry: [path.resolve(__dirname, `../App/Scripts/${fileName}`)],
+        entry: [path.resolve(__dirname, `../App/Scripts/${fileName}`).split(win32.sep).join(posix.sep)],
         outDir: path.join(__dirname, 'Cache', 'Scripts'),
 
         format: 'esm',

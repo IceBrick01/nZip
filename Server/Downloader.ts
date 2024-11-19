@@ -5,23 +5,20 @@ import { promises as fsPromises } from 'fs';
 import * as path from 'path';
 import { EventEmitter } from 'events';
 
-// Interface for download options
 interface DownloadOptions {
   concurrentDownloads?: number;
   maxRetries?: number;
   downloadDir?: string;
-  timeout?: number; // Add timeout option
-  debug?: boolean; // Add debug option
+  timeout?: number;
+  debug?: boolean;
 }
 
-// Interface for download requests
 interface DownloadRequest {
-  urls: string[]; // Supports an array of URLs
+  urls: string[];
   headers?: { [key: string]: string };
   cookies?: { [key: string]: string };
 }
 
-// Interface for individual download tasks
 interface DownloadTask {
   url: string;
   headers?: { [key: string]: string };
@@ -49,15 +46,12 @@ export default class FileDownloader extends EventEmitter {
     this.totalTasks = 0;
     this.completedTasks = 0;
 
-    // Ensure the download directory exists
     fsPromises.mkdir(this.downloadDir, { recursive: true }).catch((err) => {
       this.log(`Failed to create download directory: ${err.message}`);
     });
   }
 
-  // Main download function
   async download(requests: DownloadRequest[]): Promise<void> {
-    // Flatten the requests into individual download tasks
     const tasks: DownloadTask[] = [];
 
     for (const request of requests) {
@@ -73,7 +67,6 @@ export default class FileDownloader extends EventEmitter {
     this.totalTasks = tasks.length;
     this.completedTasks = 0;
 
-    // Create a queue of tasks and start workers
     const workers: Promise<void>[] = [];
 
     for (let i = 0; i < this.concurrentDownloads; i++) {
@@ -83,7 +76,6 @@ export default class FileDownloader extends EventEmitter {
     await Promise.all(workers);
   }
 
-  // Worker function to process the download queue
   private async worker(queue: DownloadTask[]): Promise<void> {
     while (queue.length > 0) {
       const task = queue.shift();
@@ -95,7 +87,6 @@ export default class FileDownloader extends EventEmitter {
     }
   }
 
-  // Function to download a file with retries
   private async downloadWithRetries(task: DownloadTask): Promise<void> {
     let attempts = 0;
     while (attempts < this.maxRetries) {
@@ -108,14 +99,12 @@ export default class FileDownloader extends EventEmitter {
           this.log(`Failed to download ${task.url} after ${this.maxRetries} attempts.`);
         } else {
           this.log(`Retrying download for ${task.url}. Attempt ${attempts + 1}.`);
-          // Exponential backoff
           await this.delay(2 ** attempts * 1000);
         }
       }
     }
   }
 
-  // Function to download a file
   private async downloadFile(task: DownloadTask, redirectCount = 0): Promise<void> {
     if (redirectCount >= this.redirectLimit) {
       throw new Error(`Too many redirects for ${task.url}`);
@@ -126,7 +115,6 @@ export default class FileDownloader extends EventEmitter {
     const fileName = path.basename(new URL(url).pathname);
     const filePath = path.join(this.downloadDir, fileName);
 
-    // Check if file already exists
     try {
       await fsPromises.access(filePath);
       this.log(`File ${fileName} already exists. Skipping download.`);
@@ -145,7 +133,7 @@ export default class FileDownloader extends EventEmitter {
                 .join('; ')
             : '',
         },
-        timeout: this.timeout, // Set the timeout on the request
+        timeout: this.timeout,
       };
 
       const req = protocol.get(url, options, (response) => {
@@ -170,7 +158,6 @@ export default class FileDownloader extends EventEmitter {
             reject(err);
           });
         } else if (statusCode && statusCode >= 300 && statusCode < 400 && resHeaders.location) {
-          // Handle redirects
           const redirectUrl = new URL(resHeaders.location, url).toString();
           this.downloadFile({ ...task, url: redirectUrl }, redirectCount + 1)
             .then(resolve)
@@ -192,12 +179,10 @@ export default class FileDownloader extends EventEmitter {
     });
   }
 
-  // Helper function to introduce a delay
   private delay(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
-  // Helper function to log messages if debug is enabled
   private log(message: string): void {
     if (this.debug) {
       console.log(message);
