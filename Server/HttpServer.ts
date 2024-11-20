@@ -90,6 +90,11 @@ export default (host: string, port: number, apiHost: string, imageHost: string, 
     Log.info(`${req.method} ${req.url} ${res.statusCode} - ${req.headers['x-forwarded-for'] || req.socket.remoteAddress}`)
   })
 
+  app.get('/robots.txt', (req, res) => {
+    sendFile(res, path.resolve(__dirname, '../App/Robots.txt'))
+    Log.info(`${req.method} ${req.url} ${res.statusCode} - ${req.headers['x-forwarded-for'] || req.socket.remoteAddress}`)
+  })
+
   app.all('*', (req, res) => {
     res.redirect('/error')
     Log.info(`${req.method} ${req.url} ${res.statusCode} - ${req.headers['x-forwarded-for'] || req.socket.remoteAddress}`)
