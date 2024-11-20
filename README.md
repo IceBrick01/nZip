@@ -20,9 +20,6 @@ npm install
 npm run start
 ```
 
-> [!IMPORTANT]
-> You will also need to set up a nhentai API Server to get the images. You can find the code [here](./API/Main.ts).
-
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for more details.
