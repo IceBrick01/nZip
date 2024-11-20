@@ -44,8 +44,6 @@ export default (httpServer: http.Server, httpHost: string, apiHost: string, imag
           return `${imageHost}/galleries/${response.media_id}/${index + 1}.${extension}`
         })
 
-        Log.debug(images.toString())
-
         const urlCount = images.length
         const concurrentDownloads = Math.min(urlCount, 16)
 
