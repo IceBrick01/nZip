@@ -91,7 +91,7 @@ export default (host: string, port: number, apiHost: string, imageHost: string, 
   })
 
   app.get('/robots.txt', (req, res) => {
-    sendFile(res, path.resolve(__dirname, '../App/Robots.txt'))
+    sendFile(res, path.resolve(__dirname, '../App/robots.txt'))
     Log.info(`${req.method} ${req.url} ${res.statusCode} - ${req.headers['x-forwarded-for'] || req.socket.remoteAddress}`)
   })
 
