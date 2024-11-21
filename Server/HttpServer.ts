@@ -46,6 +46,7 @@ export default (host: string, port: number, apiHost: string, imageHost: string, 
     const filePath = path.join(__dirname, 'Cache', 'Downloads', req.params.hash, req.params.file)
 
     try {
+      if (!req.params.file.endsWith('.zip')) throw new Error('Invalid File')
       await fs.access(filePath)
       res.sendFile(filePath)
     } catch {

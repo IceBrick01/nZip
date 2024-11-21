@@ -15,7 +15,7 @@ async function start (): Promise<void> {
   await bundle()
 
   const server = startHttpServer(httpHost, httpPort, apiHost, imageHost, version)
-  startSocket(server, httpHost, apiHost, imageHost)
+  startSocket(server, apiHost, imageHost)
 
   if (development) {
     setInterval(() => bundle(), 5000)

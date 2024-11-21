@@ -5,7 +5,6 @@ import http from 'http'
 import path from 'path'
 import fs from 'fs'
 import FileDownloader from './Downloader'
-import Log from './Log'
 
 interface GalleryData {
   error?: string
@@ -18,7 +17,7 @@ interface GalleryData {
 }
 
 // Start The HTTP Server
-export default (httpServer: http.Server, httpHost: string, apiHost: string, imageHost: string): void => {
+export default (httpServer: http.Server, apiHost: string, imageHost: string): void => {
   const server = new WebSocketServer({ server: httpServer })
 
   server.on('connection', async (socket, req) => {
