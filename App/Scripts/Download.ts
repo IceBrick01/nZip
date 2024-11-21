@@ -1,3 +1,32 @@
+import { Scope, Style } from '../../Server/Scope.js'
+
+Scope.use({
+  id: 'default',
+
+  initialize: (scope) => {
+    scope.AttributeManager.createAttribute('style:dynamic:minheight', (element, value) => {
+      // Update The Height
+      function update (): void {
+        let totalHeight: number = 0
+
+        for (const child of Array.from(element.children)) {
+          const bound = child.getBoundingClientRect()
+
+          totalHeight += bound.height
+        }
+
+        element.style.minHeight = Style.parseStyleValue(value.replace('<height>', `${totalHeight}px`))
+      }
+
+      update()
+
+      scope.listen(window, 'resize', () => update())
+    })
+  }
+})
+
+new Scope(document.body)
+
 const logs = document.getElementById('logs')!
 const text_logs = document.getElementById('text_logs')!
 const downloadButton = document.getElementById('download_button') as HTMLAnchorElement

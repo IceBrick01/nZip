@@ -3,7 +3,12 @@ import http from 'http'
 import path from 'path'
 import fs from 'fs/promises'
 
+import { Element } from './Scope'
 import Log from './Log'
+
+import HomePage from '../App/Pages/Home'
+import DownloadPage from '../App/Pages/Download'
+import ErrorPage from '../App/Pages/Error'
 
 // Start The HTTP Server
 export default (host: string, port: number, apiHost: string, imageHost: string, version: string): http.Server => {
@@ -11,7 +16,7 @@ export default (host: string, port: number, apiHost: string, imageHost: string, 
   const server = http.createServer(app)
 
   app.get(['/', '/home'], async (req, res) => {
-    await sendFile(res, path.join(__dirname, '../App/Pages/Home.html'), { version })
+    sendPage(res, HomePage)
     logRequest(req, res)
   })
 
@@ -22,17 +27,13 @@ export default (host: string, port: number, apiHost: string, imageHost: string, 
       const response = await (await fetch(`${apiHost}/api/gallery/${id}`)).json()
 
       if (response.error) {
-        await sendFile(res, path.join(__dirname, '../App/Pages/Error.html'), { error: 'We cannot find your doujinshi, maybe try going back to <a href="/">home</a> and try another one?' })
+        await sendPage(res, ErrorPage, { error: 'We cannot find your doujinshi, maybe try going back to <a href="/">home</a> and try another one?' })
       } else {
         const extension = response.images.pages[0].t === 'j' ? 'jpg' : response.images.pages[0].t === 'g' ? 'gif' : response.images.pages[0].t === 'w' ? 'webp' : 'png'
-        await sendFile(res, path.join(__dirname, '../App/Pages/Download.html'), {
-          id,
-          title: response.title.english,
-          cover: `${imageHost}/galleries/${response.media_id}/1.${extension}`,
-        })
+        sendPage(res, DownloadPage, { id, title: response.title.english, cover: `${imageHost}/galleries/${response.media_id}/1.${extension}` })
       }
     } catch (error) {
-      await sendFile(res, path.join(__dirname, '../App/Pages/Error.html'), { error: 'An error occurred while fetching the gallery.' })
+      await sendPage(res, ErrorPage, { error: 'An error occurred while fetching the gallery.' })
     }
 
     logRequest(req, res)
@@ -50,7 +51,7 @@ export default (host: string, port: number, apiHost: string, imageHost: string, 
       await fs.access(filePath)
       res.sendFile(filePath)
     } catch {
-      await sendFile(res, path.join(__dirname, '../App/Pages/Error.html'), { error: 'Bro what are you trying to download? <a href="/g/228922">this</a>?' })
+      await sendPage(res, ErrorPage, { error: 'Bro what are you trying to download? <a href="/g/228922">this</a>?' })
     }
 
     logRequest(req, res)
@@ -64,7 +65,7 @@ export default (host: string, port: number, apiHost: string, imageHost: string, 
       res.setHeader('Content-Type', 'text/javascript')
       res.end(await fs.readFile(scriptPath))
     } catch {
-      await sendFile(res, path.join(__dirname, '../App/Pages/Error.html'), { error: 'console.error(\'Script Not Found\')' })
+      await sendPage(res, ErrorPage, { error: 'console.error(\'Script Not Found\')' })
     }
 
     logRequest(req, res)
@@ -77,7 +78,7 @@ export default (host: string, port: number, apiHost: string, imageHost: string, 
       await fs.access(stylePath)
       await sendFile(res, stylePath)
     } catch {
-      await sendFile(res, path.join(__dirname, '../App/Pages/Error.html'), { error: 'What style do you even want? Something like <a href="/g/228922">this</a>?' })
+      await sendPage(res, ErrorPage, { error: 'What style do you even want? Something like <a href="/g/228922">this</a>?' })
     }
 
     logRequest(req, res)
@@ -90,14 +91,14 @@ export default (host: string, port: number, apiHost: string, imageHost: string, 
       await fs.access(imagePath)
       res.sendFile(imagePath)
     } catch {
-      await sendFile(res, path.join(__dirname, '../App/Pages/Error.html'), { error: 'We cannot find that image :(' })
+      await sendPage(res, ErrorPage, { error: 'We cannot find that image :(' })
     }
 
     logRequest(req, res)
   })
 
   app.get('/error', async (req, res) => {
-    await sendFile(res, path.join(__dirname, '../App/Pages/Error.html'), { error: 'Don\'t be shy! I know you like <a href="/g/228922">this</a> kind of stuff.' })
+    sendPage(res, ErrorPage, { error: 'Don\'t be shy! I know you like <a href="/g/228922">this</a> kind of stuff.' })
     logRequest(req, res)
   })
 
@@ -116,6 +117,34 @@ export default (host: string, port: number, apiHost: string, imageHost: string, 
   })
 
   return server
+}
+
+// Send Page
+async function sendPage(res: http.ServerResponse, page: Function, args?: null | { [key: string]: any }): Promise<void> {
+  try {
+    const Page = page(args)
+    const doctype = '<!DOCTYPE html>'
+    const html = new Element('html', { lang: 'en' }, [
+      new Element('head', {}, [
+        new Element('title', { innerHTML: Page.title }),
+        new Element('meta', { name: 'title', content: Page.title }),
+        new Element('meta', { name: 'description', content: Page.description }),
+        new Element('meta', { name: 'og:title', content: Page.title }),
+        new Element('meta', { name: 'og:description', content: Page.description }),
+        new Element('meta', { charset: 'utf-8' }),
+        new Element('meta', { name: 'viewport', content: 'width=device-width, initial-scale=1.0' }),
+        new Element('link', { rel: 'icon', href: '/Images/icon.ico' }),
+        new Element('link', { rel: 'stylesheet', href: '/Styles/Main.css' })
+      ]),
+      Page.content
+    ]).render()
+
+    res.setHeader('Content-Type', 'text/html')
+    res.end(doctype + html)
+  } catch (error) {
+    Log.error(error)
+    res.end('Page Not Found')
+  }
 }
 
 // Send File
