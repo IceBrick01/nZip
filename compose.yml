@@ -1,0 +1,15 @@
+services:
+  nzip-server:
+    image: nzip
+    build: .
+    ports:
+      - "3000:3000"
+    command: npm start
+    environment:
+      - HOST=${HOST}
+      - PORT=${PORT}
+      - API_URL=${API_URL}
+      - IMAGE_URL=${IMAGE_URL}
+      - ANALYTICS=${ANALYTICS}
+      - DEV=${DEV}
+    network_mode: bridge

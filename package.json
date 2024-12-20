@@ -1,4 +1,6 @@
 {
+  "name": "nZip",
+  "version": "1.5.0",
   "scripts": {
     "start": "tsx ./Main.ts"
   },

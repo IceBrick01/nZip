@@ -3,7 +3,9 @@
 nZip is a convenient tool for downloading doujinshi from nhentai.net as a zip archive.
 
 > [!WARNING]
-> This project is not affiliated with or endorsed by nhentai.net. Please use responsibly.
+> This project is not affiliated with or endorsed by nhentai.net. Please use it responsibly.
+> The logo is copyrighted by nhentai.net.
+> This project is intended for educational purposes only and should not be used for any other purposes.
 
 ## How to Use
 
@@ -11,9 +13,56 @@ nZip is a convenient tool for downloading doujinshi from nhentai.net as a zip ar
    
 2. **Direct ID Input**: Alternatively, you can enter the doujinshi ID directly on the nZip homepage to generate your zip archive.
 
+3. **Download the Archive**: Once you have entered the URL or ID, click the "Download" button to generate and download the zip archive.
+
+## Running the Project
+
+### Using Docker
+
+Install Docker (if you haven't already) with the following curl or wget:
+
+```bash
+curl -o- https://get.docker.com | bash
+```
+```bash
+wget -qO- https://get.docker.com | bash
+```
+
+Next, clone the repository and navigate to the project directory:
+
+```bash
+git clone https://github.com/IceBrick01/nZip.git
+cd nZip
+```
+
+Clone the `.env.example` file and rename it to `.env` and configure the environment variables:
+
+```bash
+cp .env.example .env
+nano .env
+```
+
+Then, run the following command to build and run the Docker container:
+
+```bash
+docker compose up --build
+```
+
+Or use the following command to run the container in the background:
+
+```bash
+docker compose up -d --build
+```
+
+The nZip service should now be running on port 3000.
+
+### Using Node.js
+
+Follow the instructions in the [Development](#development) section to run the project locally.
+
 ## Development
 
-nZip is built using TypeScript and Node.js. To run the project locally, clone the repository and execute the following commands after configuring the `Options.json` file:
+nZip is built using TypeScript and Node.js. To run the project locally, clone the repository and execute the following commands after configuring the `.env` file:
 
 ```bash
 npm install

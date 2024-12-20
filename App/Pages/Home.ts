@@ -1,9 +1,8 @@
 import fs from "fs";
 import path from "path";
 import { Element } from "../../Server/Scope";
-import { version } from "../../Options.json";
 
-export default () => {
+export default (args: { version: string }) => {
   return {
     title: 'nZip | Home',
     description: 'Easily download the doujinshi you like.',
@@ -26,7 +25,7 @@ export default () => {
         ]),
         new Element('div', { style: { flex: '1' } }),
         new Element('h1', { class: 'text', style: { fontSize: '1rem', whiteSpace: 'nowrap', marginRight: '1rem' } }, [
-          new Element('a', { href: 'https://github.com/IceBrick01/nZip', target: '_blank', innerHTML: `nZip ${version}` })
+          new Element('a', { href: 'https://github.com/IceBrick01/nZip', target: '_blank', innerHTML: `nZip ${args.version}` })
         ])
       ]),
       new Element('script', { innerHTML: fs.readFileSync(path.resolve(__dirname, '../Scripts/Home.js'), 'utf-8') })

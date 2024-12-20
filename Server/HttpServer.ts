@@ -3,20 +3,24 @@ import http from 'http'
 import path from 'path'
 import fs from 'fs/promises'
 
-import { Element } from './Scope'
+import { Element, ElementAttributes } from './Scope'
 import Log from './Log'
 
 import HomePage from '../App/Pages/Home'
 import DownloadPage from '../App/Pages/Download'
 import ErrorPage from '../App/Pages/Error'
 
+let analytics: ElementAttributes | null = null
+
 // Start The HTTP Server
-export default (host: string, port: number, apiHost: string, imageHost: string, version: string): http.Server => {
+export default (host: string, port: number, apiHost: string, imageHost: string, analytic: string, version: string): http.Server => {
+  analytics = analytic ? JSON.parse(analytic) as ElementAttributes : null
+
   const app = express()
   const server = http.createServer(app)
 
   app.get(['/', '/home'], async (req, res) => {
-    sendPage(res, HomePage)
+    sendPage(res, HomePage, { version })
     logRequest(req, res)
   })
 
@@ -124,18 +128,22 @@ async function sendPage(res: http.ServerResponse, page: Function, args?: null | 
   try {
     const Page = page(args)
     const doctype = '<!DOCTYPE html>'
+    const head = [
+      new Element('title', { innerHTML: Page.title }),
+      new Element('meta', { name: 'title', content: Page.title }),
+      new Element('meta', { name: 'description', content: Page.description }),
+      new Element('meta', { name: 'og:title', content: Page.title }),
+      new Element('meta', { name: 'og:description', content: Page.description }),
+      new Element('meta', { charset: 'utf-8' }),
+      new Element('meta', { name: 'viewport', content: 'width=device-width, initial-scale=1.0' }),
+      new Element('link', { rel: 'icon', href: '/Images/icon.ico' }),
+      new Element('link', { rel: 'stylesheet', href: '/Styles/Main.css' }),
+    ]
+
+    if (analytics) head.push(new Element('script', analytics))
+    
     const html = new Element('html', { lang: 'en' }, [
-      new Element('head', {}, [
-        new Element('title', { innerHTML: Page.title }),
-        new Element('meta', { name: 'title', content: Page.title }),
-        new Element('meta', { name: 'description', content: Page.description }),
-        new Element('meta', { name: 'og:title', content: Page.title }),
-        new Element('meta', { name: 'og:description', content: Page.description }),
-        new Element('meta', { charset: 'utf-8' }),
-        new Element('meta', { name: 'viewport', content: 'width=device-width, initial-scale=1.0' }),
-        new Element('link', { rel: 'icon', href: '/Images/icon.ico' }),
-        new Element('link', { rel: 'stylesheet', href: '/Styles/Main.css' })
-      ]),
+      new Element('head', {}, head),
       Page.content
     ]).render()
 
