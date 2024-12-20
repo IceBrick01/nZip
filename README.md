@@ -42,16 +42,28 @@ cp .env.example .env
 nano .env
 ```
 
-Then, run the following command to build and run the Docker container:
+Then, run the following command to run the Docker container:
 
 ```bash
-docker compose up --build
+docker compose up
 ```
 
 Or use the following command to run the container in the background:
 
 ```bash
-docker compose up -d --build
+docker compose up -d
+```
+
+If you want to build the Docker image from scratch, edit the `compose.yml` file and change the `image` field to `build`:
+```yml
+services:
+  nzip-server:
+    image: nzip
+    build: .
+    (...)
+```
+```bash
+docker compose up --build
 ```
 
 The nZip service should now be running on port 3000.
