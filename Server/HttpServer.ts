@@ -19,6 +19,11 @@ export default (host: string, port: number, apiHost: string, imageHost: string, 
   const app = express()
   const server = http.createServer(app)
 
+  app.use((_, res, next) => {
+    res.setHeader('X-Powered-By', 'nZip')
+    next()
+  })
+
   app.get(['/', '/home'], async (req, res) => {
     sendPage(res, HomePage, { version })
     logRequest(req, res)
@@ -181,5 +186,5 @@ async function sendFile(res: http.ServerResponse, filePath: string, args?: null 
 
 // Log Request
 function logRequest(req: express.Request, res: express.Response): void {
-  Log.info(`${req.method} ${req.url} ${res.statusCode} - ${req.headers['x-forwarded-for'] || req.socket.remoteAddress}`)
+  Log.info(`${req.method} ${req.url} ${res.statusCode} - ${req.headers['x-forwarded-for'] || req.ip || req.socket.remoteAddress}`)
 }

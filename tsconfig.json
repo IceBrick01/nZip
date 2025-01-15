@@ -1,11 +1,13 @@
 {
   "compilerOptions": {
-    "moduleResolution": "node16",
-    "esModuleInterop": true,
     "module": "node16",
+    "moduleResolution": "node16",
+    "moduleDetection": "force",
+    "esModuleInterop": true,
     "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "resolveJsonModule": true,
-
     "types": ["@types/node"]
   }
 }

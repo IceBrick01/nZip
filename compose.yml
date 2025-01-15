@@ -12,3 +12,4 @@ services:
       - ANALYTICS=${ANALYTICS}
       - DEV=${DEV}
     network_mode: bridge
+    restart: unless-stopped
