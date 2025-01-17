@@ -18,7 +18,7 @@ if (!fs.existsSync(path.join(__dirname, 'Server', 'Cache'))) fs.mkdirSync(path.j
 if (fs.existsSync(path.join(__dirname, 'Server', 'Cache', 'Downloads'))) fs.rmSync(path.join(__dirname, 'Server', 'Cache', 'Downloads'), { recursive: true })
 
 // Start The Server
-async function start (): Promise<void> {
+async function start(): Promise<void> {
   await bundle()
 
   const server = startHttpServer(httpHost, httpPort, apiHost, imageHost, analytics, version)

@@ -4,7 +4,7 @@ import fs from 'fs'
 
 // Bundle The Scripts
 export default async (): Promise<void> => {
-  if (fs.existsSync(path.join(__dirname, 'Cache', 'Scripts'))) fs.rmSync(path.join(__dirname, 'Cache', 'Scripts'),{ recursive: true })
+  if (fs.existsSync(path.join(__dirname, 'Cache', 'Scripts'))) fs.rmSync(path.join(__dirname, 'Cache', 'Scripts'), { recursive: true })
 
   fs.mkdirSync(path.join(__dirname, 'Cache', 'Scripts'), { recursive: true })
 

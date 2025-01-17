@@ -14,7 +14,7 @@ let analytics: ElementAttributes | null = null
 
 // Start The HTTP Server
 export default (host: string, port: number, apiHost: string, imageHost: string, analytic: string, version: string): http.Server => {
-  analytics = analytic ? JSON.parse(analytic) as ElementAttributes : null
+  analytics = analytic ? (JSON.parse(analytic) as ElementAttributes) : null
 
   const app = express()
   const server = http.createServer(app)
@@ -74,7 +74,7 @@ export default (host: string, port: number, apiHost: string, imageHost: string, 
       res.setHeader('Content-Type', 'text/javascript')
       res.end(await fs.readFile(scriptPath))
     } catch {
-      await sendPage(res, ErrorPage, { error: 'console.error(\'Script Not Found\')' })
+      await sendPage(res, ErrorPage, { error: "console.error('Script Not Found')" })
     }
 
     logRequest(req, res)
@@ -146,7 +146,7 @@ async function sendPage(res: http.ServerResponse, page: Function, args?: null | 
     ]
 
     if (analytics) head.push(new Element('script', analytics))
-    
+
     const html = new Element('html', { lang: 'en' }, [
       new Element('head', {}, head),
       Page.content
