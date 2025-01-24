@@ -4,7 +4,6 @@ services:
     image: ghcr.io/icebrick01/nzip:latest
     ports:
       - "3000:3000"
-    command: npm start
     environment:
       - HOST=${HOST}
       - PORT=${PORT}

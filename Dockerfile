@@ -15,7 +15,6 @@ LABEL org.opencontainers.image.title="nZip"
 LABEL org.opencontainers.image.description="Download doujinshis from nhentai.net as a zip archive."
 LABEL org.opencontainers.image.version="1.6.0"
 LABEL org.opencontainers.image.licenses="MIT"
-
 LABEL org.opencontainers.image.revision=""
 LABEL org.opencontainers.image.created=""
 
