@@ -9,8 +9,16 @@ import { version } from './package.json'
 
 const httpHost = process.env.HOST || 'http://localhost'
 const httpPort = parseInt(process.env.PORT || '3000')
-const apiHost = process.env.API_URL ? process.env.API_URL : (() => { throw new Error('API_URL is not defined') })()
-const imageHost = process.env.IMAGE_URL ? process.env.IMAGE_URL : (() => { throw new Error('IMAGE_URL is not defined') })()
+const apiHost = process.env.API_URL
+  ? process.env.API_URL
+  : (() => {
+      throw new Error('API_URL is not defined')
+    })()
+const imageHost = process.env.IMAGE_URL
+  ? process.env.IMAGE_URL
+  : (() => {
+      throw new Error('IMAGE_URL is not defined')
+    })()
 const analytics = process.env.ANALYTICS || ''
 const development = process.env.DEV === 'true'
 
@@ -25,7 +33,16 @@ async function start(): Promise<void> {
   startSocket(server, apiHost, imageHost)
 
   if (development) {
-    setInterval(() => bundle(), 5000)
+    let bundleTimeout: NodeJS.Timeout | null = null
+
+    fs.watch(path.join(__dirname, 'App', 'Scripts'), { recursive: true }, () => {
+      if (bundleTimeout) {
+        clearTimeout(bundleTimeout)
+      }
+      bundleTimeout = setTimeout(() => {
+        bundle().catch(console.error)
+      }, 3000)
+    })
   }
 }
 

@@ -3,10 +3,10 @@ import { Scope, Style } from '../../Server/Scope.js'
 Scope.use({
   id: 'default',
 
-  initialize: (scope) => {
+  initialize: scope => {
     scope.AttributeManager.createAttribute('style:dynamic:minheight', (element, value) => {
       // Update The Height
-      function update (): void {
+      function update(): void {
         let totalHeight: number = 0
 
         for (const child of Array.from(element.children)) {
@@ -40,7 +40,7 @@ socket.addEventListener('open', () => {
 let chunks: Uint8Array[] = []
 let size: number = 0
 
-socket.addEventListener('message', async (event) => {
+socket.addEventListener('message', async event => {
   const buffer = new Uint8Array(await event.data.arrayBuffer())
 
   if (buffer[0] === 0 && buffer[1] === 0) {

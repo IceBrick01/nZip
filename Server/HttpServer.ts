@@ -129,6 +129,7 @@ export default (host: string, port: number, apiHost: string, imageHost: string, 
 }
 
 // Send Page
+// prettier-ignore
 async function sendPage(res: http.ServerResponse, page: Function, args?: null | { [key: string]: any }): Promise<void> {
   try {
     const Page = page(args)
@@ -186,5 +187,5 @@ async function sendFile(res: http.ServerResponse, filePath: string, args?: null 
 
 // Log Request
 function logRequest(req: express.Request, res: express.Response): void {
-  Log.info(`${req.method} ${req.url} ${res.statusCode} - ${req.headers['x-forwarded-for'] || req.ip || req.socket.remoteAddress}`)
+  Log.info(`${req.method} ${req.url} ${res.statusCode} - ${req.headers['x-forwarded-for'] || req.ip || req.socket.remoteAddress || 'unknown'}`)
 }
