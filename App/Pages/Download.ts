@@ -28,7 +28,7 @@ export default (args: { id: string, title: string, cover: string }) => {
           }
         }
       `}),
-      new Element('script', { src: '/Scripts/Download.ts' })
+      new Element('script', { src: '/Scripts/Download.mjs' })
     ])
   }
 }

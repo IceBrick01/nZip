@@ -2,6 +2,7 @@ import express from 'express'
 import http from 'http'
 import path from 'path'
 import fs from 'fs/promises'
+import { existsSync } from 'fs'
 
 import { Element, ElementAttributes } from './Scope'
 import Log from './Log'
@@ -11,6 +12,9 @@ import DownloadPage from '../App/Pages/Download'
 import ErrorPage from '../App/Pages/Error'
 
 let analytics: ElementAttributes | null = null
+
+let filePath = './App'
+if (existsSync(path.join(__dirname, '../App'))) filePath = '../App'
 
 // Start The HTTP Server
 export default (host: string, port: number, apiHost: string, imageHost: string, analytic: string, version: string): http.Server => {
@@ -67,7 +71,7 @@ export default (host: string, port: number, apiHost: string, imageHost: string, 
   })
 
   app.get('/Scripts/:script', async (req, res) => {
-    const scriptPath = path.join(__dirname, 'Cache', 'Scripts', req.params.script.split('.')[0] + '.mjs')
+    const scriptPath = path.join(__dirname, `${filePath}/Scripts`, req.params.script.split('.')[0] + '.mjs')
 
     try {
       await fs.access(scriptPath)
@@ -81,7 +85,7 @@ export default (host: string, port: number, apiHost: string, imageHost: string, 
   })
 
   app.get('/Styles/:style', async (req, res) => {
-    const stylePath = path.join(__dirname, '../App/Styles', req.params.style)
+    const stylePath = path.join(__dirname, `${filePath}/Styles`, req.params.style)
 
     try {
       await fs.access(stylePath)
@@ -94,7 +98,7 @@ export default (host: string, port: number, apiHost: string, imageHost: string, 
   })
 
   app.get('/Images/:image', async (req, res) => {
-    const imagePath = path.join(__dirname, '../App/Images', req.params.image)
+    const imagePath = path.join(__dirname, `${filePath}/Images`, req.params.image)
 
     try {
       await fs.access(imagePath)
@@ -112,7 +116,7 @@ export default (host: string, port: number, apiHost: string, imageHost: string, 
   })
 
   app.get('/robots.txt', async (req, res) => {
-    await sendFile(res, path.join(__dirname, '../App/robots.txt'))
+    await sendFile(res, path.join(__dirname, `${filePath}/robots.txt`))
     logRequest(req, res)
   })
 

@@ -1,5 +1,3 @@
-import fs from "fs";
-import path from "path";
 import { Element } from "../../Server/Scope";
 
 export default (args: { version: string }) => {
@@ -28,7 +26,7 @@ export default (args: { version: string }) => {
           new Element('a', { href: 'https://github.com/IceBrick01/nZip', target: '_blank', innerHTML: `nZip ${args.version}` })
         ])
       ]),
-      new Element('script', { innerHTML: fs.readFileSync(path.resolve(__dirname, '../Scripts/Home.js'), 'utf-8') })
+      new Element('script', { src: '/Scripts/Home.mjs' })
     ])
   }
 }

@@ -8,6 +8,6 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "resolveJsonModule": true,
-    "types": ["@types/node"]
+    "types": ["@types/bun"]
   }
 }

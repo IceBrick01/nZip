@@ -22,8 +22,8 @@ const imageHost = process.env.IMAGE_URL
 const analytics = process.env.ANALYTICS || ''
 const development = process.env.DEV === 'true'
 
-if (!fs.existsSync(path.join(__dirname, 'Server', 'Cache'))) fs.mkdirSync(path.join(__dirname, 'Server', 'Cache'))
 if (fs.existsSync(path.join(__dirname, 'Server', 'Cache', 'Downloads'))) fs.rmSync(path.join(__dirname, 'Server', 'Cache', 'Downloads'), { recursive: true })
+if (fs.existsSync(path.join(__dirname, 'Cache', 'Downloads'))) fs.rmSync(path.join(__dirname, 'Cache', 'Downloads'), { recursive: true })
 
 // Start The Server
 async function start(): Promise<void> {
@@ -33,7 +33,8 @@ async function start(): Promise<void> {
   startSocket(server, apiHost, imageHost)
 
   if (development) {
-    let bundleTimeout: NodeJS.Timeout | null = null
+    if (!fs.existsSync(path.join(__dirname, 'App', 'Scripts'))) return
+    let bundleTimeout: NodeJS.Timer | null = null
 
     fs.watch(path.join(__dirname, 'App', 'Scripts'), { recursive: true }, () => {
       if (bundleTimeout) {

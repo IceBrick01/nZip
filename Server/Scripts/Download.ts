@@ -1,4 +1,4 @@
-import { Scope, Style } from '../../Server/Scope.js'
+import { Scope, Style } from '../Scope.js'
 
 Scope.use({
   id: 'default',
