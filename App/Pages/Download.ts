@@ -6,7 +6,7 @@ export default (args: { id: string, title: string, cover: string }) => {
     description: args.title,
     content: new Element('body', { style: { display: 'flex', flexDirection: 'column', center: 'horizontal vertical', backgroundColor: '$background_color', margin: '0', width: '100%', height: '100dvh' }, 'style:dynamic:minHeight': '<height> + 3rem' }, [
       new Element('div', { class: 'container', style: { display: 'flex', flexShrink: '0', flexWrap: 'wrap', gap: '2rem', center: 'horizontal vertical', margin: '1rem', maxWidth: '100%' } }, [
-        // new Element('img', { src: `${args.cover}`, class: 'cover-image', style: { borderRadius: '0.25rem', height: '35rem', filter: 'blur(2.5px)' } }),
+        new Element('img', { src: `${args.cover}`, class: 'cover-image', style: { borderRadius: '0.25rem', height: '35rem', filter: 'blur(2.5px)' } }),
         new Element('div', { style: { display: 'flex', flexDirection: 'column', center: 'horizontal', alignItems: 'center', maxWidth: '90dvw' } }, [
           new Element('h1', { class: 'text title', style: { fontSize: '1.75rem', margin: '0', marginBottom: '0.75rem', maxWidth: '50dvw' }, innerHTML: `${args.title}` }),
           new Element('div', { id: 'logs', style: { border: '0.2rem solid $text_color', borderRadius: '0.25rem', marginBottom: '0.5rem', width: '100%', height: '20rem', overflowY: 'scroll' } }, [
