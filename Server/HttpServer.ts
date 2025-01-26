@@ -23,14 +23,16 @@ export default (host: string, port: number, apiHost: string, imageHost: string, 
   const app = express()
   const server = http.createServer(app)
 
-  app.use((_, res, next) => {
+  app.use((req, res, next) => {
     res.setHeader('X-Powered-By', 'nZip')
+    res.on('finish', () => {
+      logRequest(req, res)
+    })
     next()
   })
 
-  app.get(['/', '/home'], async (req, res) => {
+  app.get(['/', '/home'], async (_, res) => {
     sendPage(res, HomePage, { version })
-    logRequest(req, res)
   })
 
   app.get('/g/:id', async (req, res) => {
@@ -48,8 +50,6 @@ export default (host: string, port: number, apiHost: string, imageHost: string, 
     } catch (error) {
       await sendPage(res, ErrorPage, { error: 'An error occurred while fetching the gallery.' })
     }
-
-    logRequest(req, res)
   })
 
   app.get('/g/:id/*', (req, res) => {
@@ -66,8 +66,6 @@ export default (host: string, port: number, apiHost: string, imageHost: string, 
     } catch {
       await sendPage(res, ErrorPage, { error: 'Bro what are you trying to download? <a href="/g/228922">this</a>?' })
     }
-
-    logRequest(req, res)
   })
 
   app.get('/Scripts/:script', async (req, res) => {
@@ -80,8 +78,6 @@ export default (host: string, port: number, apiHost: string, imageHost: string, 
     } catch {
       await sendPage(res, ErrorPage, { error: "console.error('Script Not Found')" })
     }
-
-    logRequest(req, res)
   })
 
   app.get('/Styles/:style', async (req, res) => {
@@ -93,8 +89,6 @@ export default (host: string, port: number, apiHost: string, imageHost: string, 
     } catch {
       await sendPage(res, ErrorPage, { error: 'What style do you even want? Something like <a href="/g/228922">this</a>?' })
     }
-
-    logRequest(req, res)
   })
 
   app.get('/Images/:image', async (req, res) => {
@@ -106,23 +100,18 @@ export default (host: string, port: number, apiHost: string, imageHost: string, 
     } catch {
       await sendPage(res, ErrorPage, { error: 'We cannot find that image :(' })
     }
-
-    logRequest(req, res)
   })
 
-  app.get('/error', async (req, res) => {
+  app.get('/error', async (_, res) => {
     sendPage(res, ErrorPage, { error: 'Don\'t be shy! I know you like <a href="/g/228922">this</a> kind of stuff.' })
-    logRequest(req, res)
   })
 
-  app.get('/robots.txt', async (req, res) => {
+  app.get('/robots.txt', async (_, res) => {
     await sendFile(res, path.join(__dirname, `${filePath}/robots.txt`))
-    logRequest(req, res)
   })
 
-  app.all('*', (req, res) => {
+  app.all('*', (_, res) => {
     res.redirect('/error')
-    logRequest(req, res)
   })
 
   server.listen(port, () => {

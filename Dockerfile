@@ -4,8 +4,9 @@ WORKDIR /workspace
 
 COPY . /workspace
 
-RUN bun install
-RUN bun run build
+# RUN bun install
+# RUN bun run build
+RUN sh build.sh
 
 FROM oven/bun:alpine
 
@@ -20,11 +21,7 @@ LABEL org.opencontainers.image.created=""
 
 WORKDIR /workspace
 
-COPY --from=0 /workspace/dist/Main.js /workspace
-COPY --from=0 /workspace/dist/Main.js.map /workspace
-COPY --from=0 /workspace/package.json /workspace
-COPY --from=0 /workspace/App /workspace/App
-RUN rm -rf /workspace/App/Pages
+COPY --from=0 /workspace/dist /workspace
 
 RUN bun install
 

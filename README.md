@@ -68,17 +68,24 @@ docker compose up --build
 
 The nZip service should now be running on port 3000.
 
-### Using Node.js
+### Using Bun
 
 Follow the instructions in the [Development](#development) section to run the project locally.
 
 ## Development
 
-nZip is built using TypeScript and Node.js. To run the project locally, clone the repository and execute the following commands after configuring the `.env` file:
+nZip is built using TypeScript and Bun. To run the project locally, clone the repository and execute the following commands after configuring the `.env` file:
 
+With npm:
 ```bash
-npm install
+npm install -D
 npm run start
+```
+
+With bun:
+```bash
+bun install -D
+bun start
 ```
 
 ## License

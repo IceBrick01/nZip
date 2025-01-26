@@ -1,9 +1,9 @@
 node_modules
 package-lock.json
-bun.lockb
+bun.lock
 
 Server/Cache/
 dist/
 
 .env
-build.sh
+build-docker.sh

@@ -28,7 +28,7 @@ export default class Log {
   }
 
   private static log(type: keyof typeof types, ...content: any[]): void {
-    if (process.env.DEV === 'true' && type === 'debug') {
+    if (process.env.NODE_ENV === 'development' && type === 'debug') {
       const stack = new Error().stack?.split('\n')[3].trim()
       const location = stack ? stack.substring(stack.indexOf('(') + 1, stack.indexOf(')')) : 'unknown location'
       console.log(`[${types[type]}] ${this.datetime()} [${location}]:`, ...content)

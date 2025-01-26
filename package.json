@@ -1,12 +1,13 @@
 {
   "name": "nzip",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "scripts": {
     "start": "bun Main.ts",
     "build": "tsup Main.ts --minify --sourcemap --out-dir dist"
   },
   "dependencies": {
     "bun": "^1.2.0",
+    "dotenv": "^16.4.7",
     "express": "^4.19.2",
     "terser": "^5.31.6",
     "tsup": "^8.2.4",

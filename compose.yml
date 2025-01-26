@@ -3,13 +3,13 @@ services:
     container_name: nzip-server
     image: ghcr.io/icebrick01/nzip:latest
     ports:
-      - "3000:3000"
+      - '3000:3000'
     environment:
       - HOST=${HOST}
       - PORT=${PORT}
       - API_URL=${API_URL}
       - IMAGE_URL=${IMAGE_URL}
       - ANALYTICS=${ANALYTICS}
-      - DEV=${DEV}
+      - NODE_ENV=${NODE_ENV}
     network_mode: bridge
     restart: unless-stopped
