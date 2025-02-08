@@ -90,7 +90,8 @@ async function download(images: string[], hash: string, socket: WebSocket, id: n
       concurrentDownloads,
       maxRetries: 10,
       downloadDir: path.join(__dirname, 'Cache', 'Downloads', hash),
-      timeout: 5000
+      timeout: 5000,
+      debug: process.env.NODE_ENV === 'development'
     })
 
     downloader.on('progress', (completed, total) => {
