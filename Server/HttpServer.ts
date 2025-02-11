@@ -7,7 +7,7 @@ import { existsSync } from 'fs'
 import { Element, type ElementAttributes } from './Scope'
 import Log from './Log'
 
-import type { GalleryData } from './Types'
+import type { Page, GalleryData } from './Types'
 
 import HomePage from '../App/Pages/Home'
 import DownloadPage from '../App/Pages/Download'
@@ -20,7 +20,7 @@ if (existsSync(path.join(__dirname, '../App'))) filePath = '../App'
 
 /**
  * Start the HTTP server
- * @param host Hostname
+ * @param host Hostname (which will only be used for logging)
  * @param port Port
  * @param apiHost API host
  * @param imageHost Image host
@@ -132,13 +132,12 @@ export default (host: string, port: number, apiHost: string, imageHost: string, 
 
 /**
  * Sends an HTML page to the client.
- *
  * @param res - The HTTP response object.
  * @param page - The page function to generate the HTML content.
  * @param args - Optional arguments to pass to the page function.
  */
 // prettier-ignore
-async function sendPage(res: http.ServerResponse, page: Function, args?: null | { [key: string]: any }): Promise<void> {
+async function sendPage(res: http.ServerResponse, page: Page, args?: null | { [key: string]: any }): Promise<void> {
   try {
     const Page = page(args)
     const doctype = '<!DOCTYPE html>'
@@ -171,7 +170,6 @@ async function sendPage(res: http.ServerResponse, page: Function, args?: null | 
 
 /**
  * Sends a file to the client.
- *
  * @param res - The HTTP response object.
  * @param filePath - The path to the file to send.
  */
@@ -186,7 +184,6 @@ async function sendFile(res: express.Response, filePath: string): Promise<void> 
 
 /**
  * Logs the request to the console.
- *
  * @param req - The HTTP request object.
  * @param res - The HTTP response object.
  */

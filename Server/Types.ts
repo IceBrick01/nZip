@@ -1,3 +1,13 @@
+import type { Element } from './Scope'
+
+interface Page {
+  (args: any): {
+    title: string
+    description: string
+    content: Element | undefined  
+  }
+}
+
 interface GalleryData {
   error?: string
   id: number
@@ -33,4 +43,4 @@ interface TagData {
   count: number
 }
 
-export type { GalleryData }
+export type { Page, GalleryData }
