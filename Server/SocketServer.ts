@@ -10,7 +10,12 @@ import Log from './Log'
 
 import type { GalleryData } from './Types'
 
-// Start The HTTP Server
+/**
+ * Start the WebSocket server
+ * @param httpServer HTTP server
+ * @param apiHost API host
+ * @param imageHost Image host
+ */
 export default (httpServer: http.Server, apiHost: string, imageHost: string): void => {
   const server = new WebSocketServer({ server: httpServer })
 
@@ -69,6 +74,13 @@ export default (httpServer: http.Server, apiHost: string, imageHost: string): vo
   })
 }
 
+/**
+ * Download images from the given URLs
+ * @param images URLs of the images to download
+ * @param hash Hash of the gallery
+ * @param socket WebSocket connection
+ * @param id Gallery ID
+ */
 async function download(images: string[], hash: string, socket: WebSocket, id: number): Promise<boolean> {
   return new Promise(async (resolve, reject) => {
     const urlCount = images.length

@@ -1,5 +1,12 @@
-import { Element } from "../../Server/Scope";
+import { Element } from "../../Server/Scope"
 
+/**
+ * Home page
+ * @param args Arguments
+ * @param args.version Version of nZip
+ * @returns Object containing the page title, description, and content
+ */
+// prettier-ignore
 export default (args: { version: string }) => {
   return {
     title: 'nZip | Home',

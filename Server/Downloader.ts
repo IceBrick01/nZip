@@ -5,6 +5,14 @@ import { promises as fsPromises } from 'fs'
 import * as path from 'path'
 import { EventEmitter } from 'events'
 
+/**
+ * Download options
+ * @param concurrentDownloads Number of concurrent downloads
+ * @param maxRetries Maximum number of retries for failed downloads
+ * @param downloadDir Directory to save downloaded files
+ * @param timeout Request timeout in milliseconds
+ * @param debug Enable debug logging
+ */
 interface DownloadOptions {
   concurrentDownloads?: number
   maxRetries?: number
@@ -13,12 +21,24 @@ interface DownloadOptions {
   debug?: boolean
 }
 
+/**
+ * Download request
+ * @param urls URLs to download
+ * @param headers Request headers
+ * @param cookies Request cookies
+ */
 interface DownloadRequest {
   urls: string[]
   headers?: { [key: string]: string }
   cookies?: { [key: string]: string }
 }
 
+/**
+ * Download task
+ * @param url URL to download
+ * @param headers Request headers
+ * @param cookies Request cookies
+ */
 interface DownloadTask {
   url: string
   headers?: { [key: string]: string }
@@ -35,6 +55,15 @@ export default class FileDownloader extends EventEmitter {
   private totalTasks: number
   private completedTasks: number
 
+  /**
+   * Create a new FileDownloader instance
+   * @param options Downloader options
+   * @param options.concurrentDownloads Number of concurrent downloads
+   * @param options.maxRetries Maximum number of retries for failed downloads
+   * @param options.downloadDir Directory to save downloaded files
+   * @param options.timeout Request timeout in milliseconds
+   * @param options.debug Enable debug logging
+   */
   constructor(options: DownloadOptions = {}) {
     super()
     this.concurrentDownloads = options.concurrentDownloads || 2
@@ -51,6 +80,10 @@ export default class FileDownloader extends EventEmitter {
     })
   }
 
+  /**
+   * Download files from the given URLs
+   * @param requests Array of download requests
+   */
   async download(requests: DownloadRequest[]): Promise<void> {
     const tasks: DownloadTask[] = []
 

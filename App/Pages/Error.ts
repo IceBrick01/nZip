@@ -1,5 +1,12 @@
-import { Element } from "../../Server/Scope";
+import { Element } from "../../Server/Scope"
 
+/**
+ * Error page
+ * @param args Arguments
+ * @param args.error Error message to display on the page
+ * @returns Object containing the page title, description, and content
+ */
+// prettier-ignore
 export default (args: { error: string }) => {
   return {
     title: 'nZip | Error',

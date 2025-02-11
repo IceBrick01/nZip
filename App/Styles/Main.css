@@ -1,29 +1,29 @@
 * {
-    font-family: monospace
+  font-family: monospace;
 }
 
 :root {
-    --background_color: black;
-    --text_color: white;
+  --background_color: black;
+  --text_color: white;
 }
 
 ::-webkit-scrollbar {
-    display: none;
-    width: 0;
-    background: transparent
+  display: none;
+  width: 0;
+  background: transparent;
 }
 
 a {
-    color: var(--text_color)
+  color: var(--text_color);
 }
 
 .text {
-    color: var(--text_color);
-    margin: 0px
+  color: var(--text_color);
+  margin: 0px;
 }
 
 .button {
-    user-select: none;
-    text-decoration: underline;
-    cursor: pointer
+  user-select: none;
+  text-decoration: underline;
+  cursor: pointer;
 }

@@ -18,7 +18,15 @@ let analytics: ElementAttributes | null = null
 let filePath = './App'
 if (existsSync(path.join(__dirname, '../App'))) filePath = '../App'
 
-// Start The HTTP Server
+/**
+ * Start the HTTP server
+ * @param host Hostname
+ * @param port Port
+ * @param apiHost API host
+ * @param imageHost Image host
+ * @param analytic Analytics data
+ * @param version nZip version
+ */
 export default (host: string, port: number, apiHost: string, imageHost: string, analytic: string, version: string): http.Server => {
   analytics = analytic ? (JSON.parse(analytic) as ElementAttributes) : null
 
@@ -41,7 +49,7 @@ export default (host: string, port: number, apiHost: string, imageHost: string, 
     const id = req.params.id
 
     try {
-      const response: GalleryData = await (await fetch(`${apiHost}/api/gallery/${id}`)).json() as GalleryData
+      const response: GalleryData = (await (await fetch(`${apiHost}/api/gallery/${id}`)).json()) as GalleryData
 
       if (response.error) {
         await sendPage(res, ErrorPage, { error: 'We cannot find your doujinshi, maybe try going back to <a href="/">home</a> and try another one?' })
@@ -122,7 +130,13 @@ export default (host: string, port: number, apiHost: string, imageHost: string, 
   return server
 }
 
-// Send Page
+/**
+ * Sends an HTML page to the client.
+ *
+ * @param res - The HTTP response object.
+ * @param page - The page function to generate the HTML content.
+ * @param args - Optional arguments to pass to the page function.
+ */
 // prettier-ignore
 async function sendPage(res: http.ServerResponse, page: Function, args?: null | { [key: string]: any }): Promise<void> {
   try {
@@ -155,7 +169,12 @@ async function sendPage(res: http.ServerResponse, page: Function, args?: null | 
   }
 }
 
-// Send File
+/**
+ * Sends a file to the client.
+ *
+ * @param res - The HTTP response object.
+ * @param filePath - The path to the file to send.
+ */
 async function sendFile(res: express.Response, filePath: string): Promise<void> {
   try {
     await fs.access(filePath)
@@ -165,7 +184,12 @@ async function sendFile(res: express.Response, filePath: string): Promise<void> 
   }
 }
 
-// Log Request
+/**
+ * Logs the request to the console.
+ *
+ * @param req - The HTTP request object.
+ * @param res - The HTTP response object.
+ */
 function logRequest(req: express.Request, res: express.Response): void {
   Log.info(`${req.method} ${req.url} ${res.statusCode} - ${req.headers['x-forwarded-for'] || req.ip || req.socket.remoteAddress || 'unknown'}`)
 }

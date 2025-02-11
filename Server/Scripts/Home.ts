@@ -1,5 +1,5 @@
-const input_sauce = document.getElementById('input_sauce')
-const text_sauce = document.getElementById('text_sauce')
+const input_sauce = document.getElementById('input_sauce')! as HTMLInputElement
+const text_sauce = document.getElementById('text_sauce')! as HTMLHeadingElement
 
 input_sauce.onchange = () => {
   if (input_sauce.value.substring(0, 22) === 'https://nhentai.net/g/') window.location.replace('/g/' + input_sauce.value.substring(22))

@@ -1,5 +1,14 @@
-import { Element } from "../../Server/Scope";
+import { Element } from "../../Server/Scope"
 
+/**
+ * Download page
+ * @param args Arguments
+ * @param args.id Gallery ID
+ * @param args.title Gallery title
+ * @param args.cover Gallery cover
+ * @returns Object containing the page title, description, and content
+ */
+// prettier-ignore
 export default (args: { id: string, title: string, cover: string }) => {
   return {
     title: `nZip | ${args.id}`,

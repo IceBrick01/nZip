@@ -27,8 +27,8 @@ Scope.use({
 
 new Scope(document.body)
 
-const logs = document.getElementById('logs')!
-const text_logs = document.getElementById('text_logs')!
+const logs = document.getElementById('logs')! as HTMLDivElement
+const text_logs = document.getElementById('text_logs')! as HTMLHeadingElement
 const downloadButton = document.getElementById('download_button') as HTMLAnchorElement
 
 const socket = new WebSocket(window.location.href)

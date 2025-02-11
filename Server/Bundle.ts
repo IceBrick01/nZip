@@ -4,7 +4,9 @@ import fs from 'fs'
 
 import Log from './Log'
 
-// Bundle The Scripts
+/**
+ * Bundle scripts
+ */
 export default async (): Promise<void> => {
   if (!fs.existsSync(path.join(__dirname, './Scripts'))) return
 
