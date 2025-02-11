@@ -30,7 +30,7 @@ export default (httpServer: http.Server, apiHost: string, imageHost: string): vo
         Log.info(`WS Download Start: ${response.id} - ${ip}`)
         fs.mkdirSync(path.join(__dirname, 'Cache', 'Downloads', hash), { recursive: true })
 
-        socket.send(Buffer.concat([Buffer.from([0, 0]), Buffer.from(`Start loading the images...`)]))
+        socket.send(Buffer.from([0x00]))
 
         const images = response.images.pages.map((page, index) => {
           const extension = page.t === 'j' ? 'jpg' : page.t === 'g' ? 'gif' : page.t === 'w' ? 'webp' : 'png'
@@ -53,8 +53,7 @@ export default (httpServer: http.Server, apiHost: string, imageHost: string): vo
         if (success === true) {
           Log.info(`WS Download End: ${response.id} - ${ip}`)
           const downloadUrl = `/download/${hash}/${id}.zip`
-          socket.send(Buffer.concat([Buffer.from([0, 0]), Buffer.from(`All images zipped!<br><br>Click the button below to download the zip file.`)]))
-          socket.send(Buffer.concat([Buffer.from([1, 1]), Buffer.from(downloadUrl)]))
+          socket.send(Buffer.concat([Buffer.from([0x02]), Buffer.from(downloadUrl)]))
           socket.close()
 
           setTimeout(() => {
@@ -62,7 +61,7 @@ export default (httpServer: http.Server, apiHost: string, imageHost: string): vo
           }, 3e5)
         } else {
           Log.error(`Failed to download gallery: ${response.id}`)
-          socket.send(Buffer.concat([Buffer.from([0, 0]), Buffer.from(`Failed to load images. Please report to the developer.`)]))
+          socket.send(Buffer.from([0x20]))
           socket.close(500, 'Internal Server Error')
         }
       }
@@ -86,14 +85,14 @@ async function download(images: string[], hash: string, socket: WebSocket, id: n
 
       downloader.on('progress', (completed, total) => {
         if (socket.readyState === socket.OPEN) {
-          socket.send(Buffer.concat([Buffer.from([0, 0]), Buffer.from(`Progress: ${completed} / ${total}`)]))
+          socket.send(Buffer.concat([Buffer.from([0x10]), Buffer.from(`["${completed}", "${total}"]`)]))
         }
       })
 
       await downloader.download([{ urls: images }])
 
       if (socket.readyState === socket.OPEN) {
-        socket.send(Buffer.concat([Buffer.from([0, 0]), Buffer.from(`All images loaded!<br><br>Zipping the images...`)]))
+        socket.send(Buffer.from([0x01]))
 
         const zipFilePath = path.join(__dirname, 'Cache', 'Downloads', hash, `${id}.zip`)
 
@@ -125,3 +124,11 @@ async function download(images: string[], hash: string, socket: WebSocket, id: n
     }
   })
 }
+
+/**
+ * 0x00: Start loading the images
+ * 0x01: All images loaded
+ * 0x02: All images zipped, download link
+ * 0x10: Progress
+ * 0x20: Error
+ */

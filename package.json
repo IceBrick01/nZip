@@ -1,25 +1,25 @@
 {
   "name": "nzip",
-  "version": "1.6.2",
+  "version": "1.6.3",
   "scripts": {
     "start": "bun Main.ts",
     "build": "tsup Main.ts --minify --sourcemap --out-dir dist"
   },
   "dependencies": {
-    "bun": "^1.2.0",
+    "bun": "^1.2.2",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "terser": "^5.37.0",
+    "terser": "^5.38.2",
     "tsup": "^8.3.6",
     "typescript": "^5.7.3",
     "ws": "^8.18.0",
     "yazl": "^3.3.1"
   },
   "devDependencies": {
-    "@types/bun": "^1.2.0",
+    "@types/bun": "^1.2.2",
     "@types/express": "^4.17.21",
-    "@types/node": "^22.10.10",
+    "@types/node": "^22.13.1",
     "@types/ws": "^8.5.14",
-    "@types/yazl": "^2.4.5"
+    "@types/yazl": "^2.4.6"
   }
 }

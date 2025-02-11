@@ -64,7 +64,7 @@ export default (host: string, port: number, apiHost: string, imageHost: string, 
     try {
       if (!req.params.file.endsWith('.zip')) throw new Error('Invalid File')
       await fs.access(filePath)
-      res.sendFile(filePath)
+      await sendFile(res, filePath)
     } catch {
       await sendPage(res, ErrorPage, { error: 'Bro what are you trying to download? <a href="/g/228922">this</a>?' })
     }
@@ -75,8 +75,7 @@ export default (host: string, port: number, apiHost: string, imageHost: string, 
 
     try {
       await fs.access(scriptPath)
-      res.setHeader('Content-Type', 'text/javascript')
-      res.end(await fs.readFile(scriptPath))
+      await sendFile(res, scriptPath)
     } catch {
       await sendPage(res, ErrorPage, { error: "console.error('Script Not Found')" })
     }
@@ -98,7 +97,7 @@ export default (host: string, port: number, apiHost: string, imageHost: string, 
 
     try {
       await fs.access(imagePath)
-      res.sendFile(imagePath)
+      await sendFile(res, imagePath)
     } catch {
       await sendPage(res, ErrorPage, { error: 'We cannot find that image :(' })
     }
@@ -148,7 +147,7 @@ async function sendPage(res: http.ServerResponse, page: Function, args?: null | 
       Page.content
     ]).render()
 
-    res.setHeader('Content-Type', 'text/html')
+    res.setHeader('Content-Type', 'text/html; charset=utf-8')
     res.end(doctype + html)
   } catch (error) {
     Log.error(error)
@@ -157,24 +156,10 @@ async function sendPage(res: http.ServerResponse, page: Function, args?: null | 
 }
 
 // Send File
-async function sendFile(res: http.ServerResponse, filePath: string, args?: null | { [key: string]: any }): Promise<void> {
+async function sendFile(res: express.Response, filePath: string): Promise<void> {
   try {
     await fs.access(filePath)
-    const extension = path.extname(filePath)
-
-    if (extension === '.html') res.setHeader('Content-Type', 'text/html')
-    if (extension === '.css') res.setHeader('Content-Type', 'text/css')
-    if (extension === '.txt') res.setHeader('Content-Type', 'text/plain')
-
-    let content = await fs.readFile(filePath, 'utf8')
-
-    if (args) {
-      for (const key of Object.keys(args)) {
-        content = content.replaceAll(`{${key}}`, args[key])
-      }
-    }
-
-    res.end(content)
+    res.sendFile(filePath)
   } catch {
     res.end('Resource Not Found')
   }

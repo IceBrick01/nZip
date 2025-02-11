@@ -37,22 +37,36 @@ socket.addEventListener('open', () => {
   text_logs.innerHTML += '<br>Connected!<br>'
 })
 
-let chunks: Uint8Array[] = []
-let size: number = 0
-
 socket.addEventListener('message', async event => {
   const buffer = new Uint8Array(await event.data.arrayBuffer())
 
-  if (buffer[0] === 0 && buffer[1] === 0) {
-    const message = new TextDecoder('utf8').decode(buffer.slice(2))
-    text_logs.innerHTML += '<br>' + message
-    logs.scrollTo(0, logs.scrollHeight)
-  } else if (buffer[0] === 1 && buffer[1] === 0) {
-    chunks.push(buffer.slice(2))
-    size += buffer.length - 2
-  } else if (buffer[0] === 1 && buffer[1] === 1) {
-    downloadButton.href = new TextDecoder('utf8').decode(buffer.slice(2))
-    downloadButton.download = `${window.location.pathname.split('/')[2]}.zip`
-    downloadButton.innerText = 'Download ZIP'
+  /**
+   * 0x00: Start loading the images
+   * 0x01: All images loaded
+   * 0x02: All images zipped, download link
+   * 0x10: Progress
+   * 0x20: Error
+   */
+  switch (buffer[0]) {
+    case 0x00:
+      return addLog('Start loading the images...')
+    case 0x01:
+      return addLog('All images loaded!<br><br>Zipping the images...')
+    case 0x02:
+      addLog('All images zipped!<br><br>Click the button below to download the zip file.')
+      downloadButton.href = new TextDecoder('utf8').decode(buffer.slice(1))
+      downloadButton.download = `${window.location.pathname.split('/')[2]}.zip`
+      downloadButton.innerText = 'Download ZIP'
+      return
+    case 0x10:
+      const [completed, total] = JSON.parse(new TextDecoder('utf8').decode(buffer.slice(1)))
+      return addLog(`Progress: ${completed} / ${total}`)
+    case 0x20:
+      return addLog('Error occurred while downloading the images. Please report this issue to the developer.')
   }
 })
+
+function addLog(message: string): void {
+  text_logs.innerHTML += '<br>' + message
+  logs.scrollTo(0, logs.scrollHeight)
+}
