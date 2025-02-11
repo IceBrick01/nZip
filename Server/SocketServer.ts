@@ -8,16 +8,7 @@ import fs from 'fs'
 import FileDownloader from './Downloader'
 import Log from './Log'
 
-interface GalleryData {
-  error?: string
-  id: number
-  media_id: string
-  images: {
-    pages: Array<{ t: string }>
-    cover: { t: string }
-    thumbnail: { t: string }
-  }
-}
+import type { GalleryData } from './Types'
 
 // Start The HTTP Server
 export default (httpServer: http.Server, apiHost: string, imageHost: string): void => {
@@ -29,7 +20,7 @@ export default (httpServer: http.Server, apiHost: string, imageHost: string): vo
     const url = req.url
 
     if (url && url.substring(0, 3) === '/g/') {
-      const response: GalleryData = await (await fetch(`${apiHost}/api/gallery/${url.substring(3)}`)).json()
+      const response: GalleryData = (await (await fetch(`${apiHost}/api/gallery/${url.substring(3)}`)).json()) as GalleryData
 
       if (response.error) {
         socket.close(404, 'Resource Not Found')
@@ -51,21 +42,15 @@ export default (httpServer: http.Server, apiHost: string, imageHost: string): vo
         let success = false
 
         while (success === false && retry < 3) {
-          try {
-            await download(images, hash, socket, id)
-            success = true
-          } catch {
-            Log.warn(`Failed to download gallery: ${response.id}`)
-            socket.send(Buffer.concat([Buffer.from([0, 0]), Buffer.from(`Failed to load images. Retrying...`)]))
+          success = await download(images, hash, socket, id)
+          if (success === false) {
             retry++
+          } else {
+            break
           }
         }
 
-        if (success === false) {
-          Log.error(`Failed to download gallery: ${response.id}`)
-          socket.send(Buffer.concat([Buffer.from([0, 0]), Buffer.from(`Failed to load images. Please report to the developer.`)]))
-          socket.close(500, 'Internal Server Error')
-        } else {
+        if (success === true) {
           Log.info(`WS Download End: ${response.id} - ${ip}`)
           const downloadUrl = `/download/${hash}/${id}.zip`
           socket.send(Buffer.concat([Buffer.from([0, 0]), Buffer.from(`All images zipped!<br><br>Click the button below to download the zip file.`)]))
@@ -75,60 +60,68 @@ export default (httpServer: http.Server, apiHost: string, imageHost: string): vo
           setTimeout(() => {
             fs.rmSync(path.join(__dirname, 'Cache', 'Downloads', hash), { recursive: true })
           }, 3e5)
+        } else {
+          Log.error(`Failed to download gallery: ${response.id}`)
+          socket.send(Buffer.concat([Buffer.from([0, 0]), Buffer.from(`Failed to load images. Please report to the developer.`)]))
+          socket.close(500, 'Internal Server Error')
         }
       }
     }
   })
 }
 
-async function download(images: string[], hash: string, socket: WebSocket, id: number): Promise<void> {
-  const urlCount = images.length
-  const concurrentDownloads = Math.min(urlCount, 16)
+async function download(images: string[], hash: string, socket: WebSocket, id: number): Promise<boolean> {
+  return new Promise(async (resolve, reject) => {
+    const urlCount = images.length
+    const concurrentDownloads = Math.min(urlCount, 16)
 
-  try {
-    const downloader = new FileDownloader({
-      concurrentDownloads,
-      maxRetries: 10,
-      downloadDir: path.join(__dirname, 'Cache', 'Downloads', hash),
-      timeout: 5000,
-      debug: process.env.NODE_ENV === 'development'
-    })
-
-    downloader.on('progress', (completed, total) => {
-      if (socket.readyState === socket.OPEN) {
-        socket.send(Buffer.concat([Buffer.from([0, 0]), Buffer.from(`Progress: ${completed} / ${total}`)]))
-      }
-    })
-
-    await downloader.download([{ urls: images }])
-
-    if (socket.readyState === socket.OPEN) {
-      socket.send(Buffer.concat([Buffer.from([0, 0]), Buffer.from(`All images loaded!<br><br>Zipping the images...`)]))
-
-      const zipFilePath = path.join(__dirname, 'Cache', 'Downloads', hash, `${id}.zip`)
-
-      const zipfile = new ZipFile()
-      const output = fs.createWriteStream(zipFilePath)
-
-      zipfile.outputStream.pipe(output).on('close', () => {
-        return true
+    try {
+      const downloader = new FileDownloader({
+        concurrentDownloads,
+        maxRetries: 10,
+        downloadDir: path.join(__dirname, 'Cache', 'Downloads', hash),
+        timeout: 5000,
+        debug: process.env.NODE_ENV === 'development'
       })
 
-      for (const url of images) {
-        const filePath = path.join(__dirname, 'Cache', 'Downloads', hash, path.basename(url))
-        zipfile.addFile(filePath, path.basename(url))
+      downloader.on('progress', (completed, total) => {
+        if (socket.readyState === socket.OPEN) {
+          socket.send(Buffer.concat([Buffer.from([0, 0]), Buffer.from(`Progress: ${completed} / ${total}`)]))
+        }
+      })
+
+      await downloader.download([{ urls: images }])
+
+      if (socket.readyState === socket.OPEN) {
+        socket.send(Buffer.concat([Buffer.from([0, 0]), Buffer.from(`All images loaded!<br><br>Zipping the images...`)]))
+
+        const zipFilePath = path.join(__dirname, 'Cache', 'Downloads', hash, `${id}.zip`)
+
+        const zipfile = new ZipFile()
+        const output = fs.createWriteStream(zipFilePath)
+
+        zipfile.outputStream.pipe(output).on('close', () => {
+          resolve(true)
+        })
+
+        for (const url of images) {
+          const filePath = path.join(__dirname, 'Cache', 'Downloads', hash, path.basename(url))
+          zipfile.addFile(filePath, path.basename(url))
+        }
+
+        zipfile.end()
+
+        return true
+      }
+    } catch (error) {
+      if (socket.readyState === socket.OPEN) {
+        socket.send(Buffer.concat([Buffer.from([0, 0]), Buffer.from(`Failed to download images. Please report to the developer.`)]))
+        socket.close()
       }
 
-      zipfile.end()
-    }
-  } catch (error) {
-    if (socket.readyState === socket.OPEN) {
-      socket.send(Buffer.concat([Buffer.from([0, 0]), Buffer.from(`Failed to download images. Please report to the developer.`)]))
-      socket.close()
-    }
+      fs.rmSync(path.join(__dirname, 'Cache', 'Downloads', hash), { recursive: true })
 
-    fs.rmSync(path.join(__dirname, 'Cache', 'Downloads', hash), { recursive: true })
-
-    throw error
-  }
+      reject(error)
+    }
+  })
 }

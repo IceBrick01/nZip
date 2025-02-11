@@ -4,8 +4,10 @@ import path from 'path'
 import fs from 'fs/promises'
 import { existsSync } from 'fs'
 
-import { Element, ElementAttributes } from './Scope'
+import { Element, type ElementAttributes } from './Scope'
 import Log from './Log'
+
+import type { GalleryData } from './Types'
 
 import HomePage from '../App/Pages/Home'
 import DownloadPage from '../App/Pages/Download'
@@ -39,7 +41,7 @@ export default (host: string, port: number, apiHost: string, imageHost: string, 
     const id = req.params.id
 
     try {
-      const response = await (await fetch(`${apiHost}/api/gallery/${id}`)).json()
+      const response: GalleryData = await (await fetch(`${apiHost}/api/gallery/${id}`)).json() as GalleryData
 
       if (response.error) {
         await sendPage(res, ErrorPage, { error: 'We cannot find your doujinshi, maybe try going back to <a href="/">home</a> and try another one?' })
