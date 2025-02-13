@@ -5,7 +5,9 @@ import http from 'http'
 import path from 'path'
 import fs from 'fs'
 
-import FileDownloader from './Downloader'
+import nhget from '@icebrick/nhget'
+import FileDownloader from '@icebrick/file-downloader'
+
 import Log from './Log'
 
 import type { GalleryData } from './Types'
@@ -17,6 +19,11 @@ import type { GalleryData } from './Types'
  * @param imageHost Image host
  */
 export default (httpServer: http.Server, apiHost: string, imageHost: string): void => {
+  const nh = new nhget({
+    endpoint: `${apiHost}/api/gallery/`,
+    imageEndpoint: `${imageHost}/galleries/`
+  })
+
   const server = new WebSocketServer({ server: httpServer })
 
   server.on('connection', async (socket, req) => {
@@ -25,7 +32,7 @@ export default (httpServer: http.Server, apiHost: string, imageHost: string): vo
     const url = req.url
 
     if (url && url.substring(0, 3) === '/g/') {
-      const response: GalleryData = (await (await fetch(`${apiHost}/api/gallery/${url.substring(3)}`)).json()) as GalleryData
+      const response: GalleryData = await nh.get(url.substring(3)) as GalleryData
 
       if (response.error) {
         socket.close(404, 'Resource Not Found')

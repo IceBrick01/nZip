@@ -4,6 +4,8 @@ import path from 'path'
 import fs from 'fs/promises'
 import { existsSync } from 'fs'
 
+import nhget from '@icebrick/nhget'
+
 import { Element, type ElementAttributes } from './Scope'
 import Log from './Log'
 
@@ -30,6 +32,11 @@ if (existsSync(path.join(__dirname, '../App'))) filePath = '../App'
 export default (host: string, port: number, apiHost: string, imageHost: string, analytic: string, version: string): http.Server => {
   analytics = analytic ? (JSON.parse(analytic) as ElementAttributes) : null
 
+  const nh = new nhget({
+    endpoint: `${apiHost}/api/gallery/`,
+    imageEndpoint: `${imageHost}/galleries/`
+  })
+
   const app = express()
   const server = http.createServer(app)
 
@@ -46,10 +53,14 @@ export default (host: string, port: number, apiHost: string, imageHost: string, 
   })
 
   app.get('/g/:id', async (req, res) => {
-    const id = req.params.id
+    let id = req.params.id
+    if (!Number(id)) {
+      sendPage(res, ErrorPage, { error: 'That\'s not a Number 😭' })
+      return
+    }
 
     try {
-      const response: GalleryData = (await (await fetch(`${apiHost}/api/gallery/${id}`)).json()) as GalleryData
+      const response: GalleryData = await nh.get(id) as GalleryData
 
       if (response.error) {
         await sendPage(res, ErrorPage, { error: 'We cannot find your doujinshi, maybe try going back to <a href="/">home</a> and try another one?' })
