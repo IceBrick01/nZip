@@ -128,12 +128,10 @@ async function download(images: string[], hash: string, socket: WebSocket, id: n
         }
 
         zipfile.end()
-
-        return true
       }
     } catch (error) {
       if (socket.readyState === socket.OPEN) {
-        socket.send(Buffer.concat([Buffer.from([0, 0]), Buffer.from(`Failed to download images. Please report to the developer.`)]))
+        socket.send(Buffer.from([0x20]))
         socket.close()
       }
 
