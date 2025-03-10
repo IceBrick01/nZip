@@ -7,7 +7,7 @@ import { existsSync } from 'fs'
 import nhget from '@icebrick/nhget'
 import Log from '@icebrick/log'
 
-import { Element, type ElementAttributes } from './Scope'
+import { Element, type ElementAttributes } from '@lightbery/scope'
 
 import type { Page, GalleryData } from './Types'
 

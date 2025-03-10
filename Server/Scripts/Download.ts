@@ -1,4 +1,4 @@
-import { Scope, Style } from '../Scope.js'
+import { Scope, Style } from '@lightbery/scope'
 
 Scope.use({
   id: 'default',

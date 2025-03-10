@@ -1,4 +1,4 @@
-import { Element } from "../../Server/Scope"
+import { Element } from '@lightbery/scope'
 
 /**
  * Download page

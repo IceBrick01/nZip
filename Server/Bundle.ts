@@ -1,6 +1,7 @@
 import { build } from 'tsup'
 import path, { win32, posix } from 'path'
 import fs from 'fs'
+
 import Log from '@icebrick/log'
 
 /**
@@ -25,7 +26,8 @@ export default async (): Promise<void> => {
         format: 'esm',
         minify: 'terser',
 
-        silent: true
+        silent: true,
+        noExternal: [/(.*)/]
       })
       Log.success(`Bundled ${fileName}`)
     } catch (error) {

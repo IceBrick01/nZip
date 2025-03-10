@@ -1,4 +1,4 @@
-import type { Element } from './Scope'
+import type { Element } from '@lightbery/scope'
 
 interface Page {
   (args: any): {
