@@ -7,8 +7,7 @@ import fs from 'fs'
 
 import nhget from '@icebrick/nhget'
 import FileDownloader from '@icebrick/file-downloader'
-
-import Log from './Log'
+import Log from '@icebrick/log'
 
 import type { GalleryData } from './Types'
 

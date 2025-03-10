@@ -1,8 +1,7 @@
 import { build } from 'tsup'
 import path, { win32, posix } from 'path'
 import fs from 'fs'
-
-import Log from './Log'
+import Log from '@icebrick/log'
 
 /**
  * Bundle scripts

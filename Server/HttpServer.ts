@@ -5,9 +5,9 @@ import fs from 'fs/promises'
 import { existsSync } from 'fs'
 
 import nhget from '@icebrick/nhget'
+import Log from '@icebrick/log'
 
 import { Element, type ElementAttributes } from './Scope'
-import Log from './Log'
 
 import type { Page, GalleryData } from './Types'
 
