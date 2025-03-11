@@ -158,11 +158,19 @@ async function sendPage(res: http.ServerResponse, page: Page, args?: null | { [k
       new Element('meta', { name: 'description', content: Page.description }),
       new Element('meta', { name: 'og:title', content: Page.title }),
       new Element('meta', { name: 'og:description', content: Page.description }),
-      new Element('meta', { charset: 'utf-8' }),
-      new Element('meta', { name: 'viewport', content: 'width=device-width, initial-scale=1.0' }),
-      new Element('link', { rel: 'icon', href: '/Images/icon.ico' }),
-      new Element('link', { rel: 'stylesheet', href: '/Styles/Main.css' }),
     ]
+
+    if (Page.keywords) head.push(new Element('meta', { name: 'keywords', content: Page.keywords }))
+
+    head.push(
+      new Element('meta', { name: 'viewport', content: 'width=device-width, initial-scale=1.0' }),
+      new Element('meta', { charset: 'utf-8' })
+    )
+
+    head.push(
+      new Element('link', { rel: 'icon', href: '/Images/icon.ico' }),
+      new Element('link', { rel: 'stylesheet', href: '/Styles/Main.css' })
+    )
 
     if (analytics) head.push(new Element('script', analytics))
 

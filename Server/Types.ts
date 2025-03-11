@@ -4,6 +4,7 @@ interface Page {
   (args: any): {
     title: string
     description: string
+    keywords?: string
     content: Element | undefined  
   }
 }

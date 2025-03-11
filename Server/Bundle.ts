@@ -27,7 +27,9 @@ export default async (): Promise<void> => {
         minify: 'terser',
 
         silent: true,
-        noExternal: [/(.*)/]
+        noExternal: [/(.*)/],
+        sourcemap: false,
+        config: false
       })
       Log.success(`Bundled ${fileName}`)
     } catch (error) {
