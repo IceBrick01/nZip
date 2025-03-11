@@ -4,8 +4,6 @@ WORKDIR /workspace
 
 COPY . /workspace
 
-# RUN bun install
-# RUN bun run build
 RUN sh build.sh
 
 FROM oven/bun:alpine
@@ -23,8 +21,6 @@ WORKDIR /workspace
 
 COPY --from=0 /workspace/dist /workspace
 
-RUN bun install --omit dev
-
 EXPOSE 3000
 
-CMD ["bun", "Main.js"]
+CMD ["start.sh"]
