@@ -48,12 +48,20 @@ export default (httpServer: http.Server, apiHost: string, imageHost: string): vo
           return `${imageHost}/galleries/${response.media_id}/${index + 1}.${extension}`
         })
 
-        let id = response.id
+        const id = response.id
+        const title = response.title.english || response.title.japanese || response.title.pretty || null
+        let filename = title ? title.replace(/[/\\?%*:|"<>]/g, '_') : null
+        if (title) {
+          filename = `[${id}] ${filename}.zip`
+        } else {
+          filename = `${id}.zip`
+        }
+
         let retry = 0
         let success = false
 
         while (success === false && retry < 3) {
-          success = await download(images, hash, socket, id)
+          success = await download(images, hash, socket, filename)
           if (success === false) {
             retry++
           } else {
@@ -63,7 +71,7 @@ export default (httpServer: http.Server, apiHost: string, imageHost: string): vo
 
         if (success === true) {
           Log.info(`WS Download End: ${response.id} - ${ip}`)
-          const downloadUrl = `/download/${hash}/${id}.zip`
+          const downloadUrl = `/download/${hash}/${filename}`
           socket.send(Buffer.concat([Buffer.from([0x02]), Buffer.from(downloadUrl)]))
           socket.close()
 
@@ -85,9 +93,9 @@ export default (httpServer: http.Server, apiHost: string, imageHost: string): vo
  * @param images URLs of the images to download
  * @param hash Hash of the gallery
  * @param socket WebSocket connection
- * @param id Gallery ID
+ * @param filename Filename of the zip file
  */
-async function download(images: string[], hash: string, socket: WebSocket, id: number): Promise<boolean> {
+async function download(images: string[], hash: string, socket: WebSocket, filename: string): Promise<boolean> {
   return new Promise(async (resolve, reject) => {
     const urlCount = images.length
     const concurrentDownloads = Math.min(urlCount, 16)
@@ -112,7 +120,7 @@ async function download(images: string[], hash: string, socket: WebSocket, id: n
       if (socket.readyState === socket.OPEN) {
         socket.send(Buffer.from([0x01]))
 
-        const zipFilePath = path.join(__dirname, 'Cache', 'Downloads', hash, `${id}.zip`)
+        const zipFilePath = path.join(__dirname, 'Cache', 'Downloads', hash, filename)
 
         const zipfile = new ZipFile()
         const output = fs.createWriteStream(zipFilePath)
