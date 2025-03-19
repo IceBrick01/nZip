@@ -19,7 +19,12 @@ export default (args: { version: string }) => {
       new Element('div', { style: { marginLeft: '1rem', marginRight: '1rem' } }, [
         new Element('h1', { class: 'text', style: { fontSize: '2.75rem', whiteSpace: 'nowrap', margin: '0px' }, innerHTML: 'nZip' }),
         new Element('h1', { class: 'text', style: { fontSize: '1.25rem', margin: '0px', marginBottom: '1rem' }, innerHTML: 'The place to download the doujinshi you like.' }),
-        new Element('input', { id: 'input_sauce', type: 'text', placeholder: 'The Sauce', style: { outline: 'none', backgroundColor: '$background_color', color: '$text_color', border: '0.2rem solid $text_color', borderRadius: '0.25rem', fontSize: '1.25rem', fontWeight: 'bold', padding: '0.5rem 0.5rem', width: '100% - 1.5rem' } })
+        new Element('input', { id: 'input_sauce', type: 'text', placeholder: 'The Sauce', style: { outline: 'none', backgroundColor: '$background_color', color: '$text_color', border: '0.2rem solid $text_color', borderRadius: '0.25rem', fontSize: '1.25rem', fontWeight: 'bold', padding: '0.5rem 0.5rem', width: '100% - 1.5rem' } }),
+        new Element('div', { style: { display: 'flex', flexDirection: 'row', alignItems: 'center', marginTop: '0.25rem', gap: '0.5rem' } }, [
+          new Element('a', { class: 'text', href: '/terms', innerHTML: 'Terms', style: { fontSize: '1rem' }}),
+          new Element('h1', { class: 'text', innerHTML: 'and', style: { fontSize: '1rem' }}),
+          new Element('a', { class: 'text', href: '/privacy', innerHTML: 'Privacy', style: { fontSize: '1rem' }})
+        ]),
       ]),
       new Element('div', { style: { position: 'fixed', display: 'flex', fontSize: '1rem', bottom: '0.6rem', width: '100dvw' } }, [
         new Element('div', { style: { display: 'flex', center: 'vertical', gap: '0.5rem', marginLeft: '1rem', marginRight: '1rem' }}, [

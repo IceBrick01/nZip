@@ -14,6 +14,8 @@ import type { Page, GalleryData } from './Types'
 import HomePage from '../App/Pages/Home'
 import DownloadPage from '../App/Pages/Download'
 import ErrorPage from '../App/Pages/Error'
+import TermsPage from '../App/Pages/Terms'
+import PrivacyPage from '../App/Pages/Privacy'
 
 let analytics: ElementAttributes | null = null
 
@@ -50,6 +52,14 @@ export default (host: string, port: number, apiHost: string, imageHost: string, 
 
   app.get(['/', '/home'], async (_, res) => {
     sendPage(res, HomePage, { version })
+  })
+
+  app.get('/terms', async (_, res) => {
+    sendPage(res, TermsPage)
+  })
+
+  app.get('/privacy', async (_, res) => {
+    sendPage(res, PrivacyPage)
   })
 
   app.get('/g/:id', async (req, res) => {
