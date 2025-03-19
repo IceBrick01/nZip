@@ -20,7 +20,7 @@ export default () => {
         new Element('p', { class: 'text', innerHTML: 'This project is not affiliated with or endorsed by nhentai.net.' })
       ]),
       new Element('div', { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', width: '90dvw', marginTop: '1rem' } }, [
-        new Element('p', { class: 'text', innerHTML: 'By using nZip, you acknowledge that you have read and understood this Terms of Service document. If you do not agree with these terms, please refrain from using the service.' })
+        new Element('p', { class: 'text', innerHTML: 'By using nZip, you acknowledge that you have read and understood this Terms of Service and <a href="/privacy">Privacy Policy</a> document. If you do not agree with these terms, please refrain from using the service.' })
       ]),
       new Element('div', { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', width: '90dvw', marginTop: '1rem' } }, [
         new Element('a', { class: 'text', href: 'javascript:history.back()', innerHTML: 'Back' })
