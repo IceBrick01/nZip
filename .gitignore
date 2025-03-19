@@ -7,4 +7,3 @@ Server/Cache/
 dist/
 
 .env
-build-docker.sh
