@@ -3,6 +3,7 @@
 rm -rf dist
 
 bun install
+bun run bundle
 bun run build
 
 cp .npmrc dist

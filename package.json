@@ -3,7 +3,8 @@
   "version": "1.7.0",
   "scripts": {
     "start": "bun Main.ts",
-    "build": "tsup"
+    "build": "tsup",
+    "bundle": "bun -e \"import Bundle from './Server/Bundle'; await Bundle();\""
   },
   "dependencies": {
     "bun": "^1.2.7",
