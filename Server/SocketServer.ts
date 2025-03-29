@@ -11,6 +11,9 @@ import Log from '@icebrick/log'
 
 import type { GalleryData } from './Types'
 
+const clients: { [key: symbol]: WebSocket } = {}
+let lastID: number = 0
+
 /**
  * Start the WebSocket server
  * @param httpServer HTTP server
@@ -30,18 +33,33 @@ export default (httpServer: http.Server, apiHost: string, imageHost: string): vo
     const ip = Array.isArray(forwardedFor) ? forwardedFor[0].trim() : forwardedFor?.split(',')[0].trim() || req.socket.remoteAddress || 'unknown'
     const url = req.url
 
-    if (url && url.substring(0, 3) === '/g/') {
+    if (url && (url === '/' || url === '/home')) {
+      const id = Symbol()
+
+      clients[id] = socket
+
+      socket.send(Buffer.from(lastID.toString()))
+      socket.on('close', () => delete clients[id])
+    } else if (url && url.substring(0, 3) === '/g/') {
       const response: GalleryData = await nh.get(url.substring(3)) as GalleryData
 
       if (response.error) {
         socket.close(404, 'Resource Not Found')
       } else {
+        lastID = response.id
+
+        console.log(Object.getOwnPropertySymbols(clients))
+
+        for (const id of Object.getOwnPropertySymbols(clients)) {
+          console.log(id)
+
+          clients[id].send(Buffer.from(lastID.toString()))
+        }
+
         const hash = crypto.createHash('md5').update(url.substring(3)).update(Date.now().toString()).digest('hex')
 
         Log.info(`WS Download Start: ${response.id} - ${ip}`)
         fs.mkdirSync(path.join(__dirname, 'Cache', 'Downloads', hash), { recursive: true })
-
-        socket.send(Buffer.from([0x00]))
 
         const images = response.images.pages.map((page, index) => {
           const extension = page.t === 'j' ? 'jpg' : page.t === 'g' ? 'gif' : page.t === 'w' ? 'webp' : 'png'
@@ -71,13 +89,11 @@ export default (httpServer: http.Server, apiHost: string, imageHost: string): vo
 
         if (success === true) {
           Log.info(`WS Download End: ${response.id} - ${ip}`)
-          const downloadUrl = `/download/${hash}/${filename}`
-          socket.send(Buffer.concat([Buffer.from([0x02]), Buffer.from(downloadUrl)]))
+
+          socket.send(Buffer.concat([Buffer.from([0x20]), Buffer.from(`/download/${hash}/${filename}`)]))
           socket.close()
 
-          setTimeout(() => {
-            fs.rmSync(path.join(__dirname, 'Cache', 'Downloads', hash), { recursive: true })
-          }, 3e5)
+          setTimeout(() => fs.rmSync(path.join(__dirname, 'Cache', 'Downloads', hash), { recursive: true }), 3e5)
         } else {
           Log.error(`Failed to download gallery: ${response.id}`)
           socket.send(Buffer.from([0x20]))
@@ -100,25 +116,44 @@ async function download(images: string[], hash: string, socket: WebSocket, filen
     const urlCount = images.length
     const concurrentDownloads = Math.min(urlCount, 16)
 
-    try {
-      const downloader = new FileDownloader({
-        concurrentDownloads,
-        maxRetries: 10,
-        downloadDir: path.join(__dirname, 'Cache', 'Downloads', hash),
-        timeout: 5000,
-        debug: process.env.NODE_ENV === 'development'
-      })
+    const downloader = new FileDownloader({
+      concurrentDownloads,
+      maxRetries: 10,
+      downloadDir: path.join(__dirname, 'Cache', 'Downloads', hash),
+      timeout: 5000,
+      debug: process.env['NODE_ENV'] === 'development'
+    })
 
-      downloader.on('progress', (completed, total) => {
-        if (socket.readyState === socket.OPEN) {
-          socket.send(Buffer.concat([Buffer.from([0x10]), Buffer.from(`["${completed}", "${total}"]`)]))
-        }
-      })
-
-      await downloader.download([{ urls: images }])
-
+    downloader.on('progress', (completed, total) => {
       if (socket.readyState === socket.OPEN) {
-        socket.send(Buffer.from([0x01]))
+        const buffer = Buffer.alloc(1 + 2 + 2)
+
+        buffer[0] = 0x00
+        buffer.writeUint16BE(completed, 1)
+        buffer.writeUint16BE(total, 3)
+
+        socket.send(buffer)
+      }
+    })
+
+    try {
+      await downloader.download([{ urls: images }])
+    } catch (error) {
+      socket.send(Buffer.from([0x01]))
+      socket.close()
+
+      fs.rmSync(path.join(__dirname, 'Cache', 'Downloads', hash), { recursive: true })
+    }
+
+    if (socket.readyState === socket.OPEN) {
+      try {
+        const buffer = Buffer.alloc(1 + 2 + 2)
+
+        buffer[0] = 0x10
+        buffer.writeUint16BE(0, 1)
+        buffer.writeUint16BE(images.length, 3)
+
+        socket.send(buffer)
 
         const zipFilePath = path.join(__dirname, 'Cache', 'Downloads', hash, filename)
 
@@ -135,17 +170,13 @@ async function download(images: string[], hash: string, socket: WebSocket, filen
         }
 
         zipfile.end()
-      }
-    } catch (error) {
-      if (socket.readyState === socket.OPEN) {
-        socket.send(Buffer.from([0x20]))
+      } catch (_) {
+        socket.send(Buffer.from([0x11]))
         socket.close()
+
+        fs.rmSync(path.join(__dirname, 'Cache', 'Downloads', hash), { recursive: true })
       }
-
-      fs.rmSync(path.join(__dirname, 'Cache', 'Downloads', hash), { recursive: true })
-
-      reject(error)
-    }
+    } 
   })
 }
 

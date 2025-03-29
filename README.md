@@ -84,7 +84,7 @@ npm run start
 
 With bun:
 ```bash
-bun install -D
+bun install
 bun start
 ```
 

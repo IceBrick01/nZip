@@ -27,46 +27,123 @@ Scope.use({
 
 new Scope(document.body)
 
-const logs = document.getElementById('logs')! as HTMLDivElement
-const text_logs = document.getElementById('text_logs')! as HTMLHeadingElement
-const downloadButton = document.getElementById('download_button') as HTMLAnchorElement
+const image_cover = document.getElementById('image-cover') as HTMLDivElement
+const step_connect_status = document.getElementById('step-connect-status') as HTMLDivElement
+const step_download_container = document.getElementById('step-download-container') as HTMLDivElement
+const step_download_status = document.getElementById('step-download-status') as HTMLDivElement
+const step_pack_container = document.getElementById('step-pack-container') as HTMLDivElement
+const step_pack_status = document.getElementById('step-pack-status') as HTMLDivElement
+const step_finish_container = document.getElementById('step-finish-container') as HTMLDivElement
+const step_finish_status = document.getElementById('step-finish-status') as HTMLDivElement
+const progress_text = document.getElementById('progress-text') as HTMLElement
+const progress_result = document.getElementById('progress-result') as HTMLLinkElement
+const progress_bar = document.getElementById('progress-bar') as HTMLDivElement
 
 const socket = new WebSocket(window.location.href)
 
 socket.addEventListener('open', () => {
-  text_logs.innerHTML += '<br>Connected!<br>'
+  step_connect_status.style.animation = ''
+  step_connect_status.style.width = '0.75rem'
+  step_connect_status.style.backgroundColor = 'var(--text_color)'
+
+  progress_text.innerHTML = '10%'
+  progress_bar.style.width = '10%'
+
+  let step_download: boolean = false
+  let step_pack: boolean = false
+
+  socket.addEventListener('message', async (event) => {
+    const raw = await event.data.arrayBuffer()
+    const buffer = new Uint8Array(raw)
+    const view = new DataView(raw)
+
+    /**
+     * 0x00 Download progress
+     * 0x01 Download error
+     * 0x10 Pack progress
+     * 0x11 Pack error
+     * 0x20 Download link
+     */
+
+    if (buffer[0] === 0x00) {
+      if (!step_download) {
+        step_download_container.style.opacity = '1'
+        step_download_status.style.animation = '1s flashing infinite'
+
+        step_download = true
+      }
+
+      const completed = view.getUint16(1)
+      const total = view.getUint16(3)
+
+      progress_text.innerHTML = `${Math.round(10 + ((80 / total) * completed))}% (${completed} / ${total})`
+      progress_bar.style.width = `${10 + ((80 / total) * completed)}%`
+    } else if (buffer[0] === 0x01) {
+
+    } else if (buffer[0] === 0x10) {
+      if (step_download) {
+        step_download_status.style.animation = ''
+        step_download_status.style.width = '0.75rem'
+        step_download_status.style.backgroundColor = 'var(--text_color)'
+
+        step_download = false
+      }
+
+      if (!step_pack) {
+        step_pack_container.style.opacity = '1'
+        step_pack_status.style.animation = '1s flashing infinite'
+
+        step_pack = true
+      }
+
+      const completed = view.getUint16(1)
+      const total = view.getUint16(3)
+
+      progress_text.innerHTML = `${Math.round(90 + ((10 / total) * completed))}% (${completed} / ${total})`
+      progress_bar.style.width = `${90 + ((10 / total) * completed)}%`
+    } else if (buffer[0] === 0x11) {
+
+    } else if (buffer[0] === 0x20) {
+      if (step_download) {
+        step_download_status.style.animation = ''
+        step_download_status.style.width = '0.75rem'
+        step_download_status.style.backgroundColor = 'var(--text_color)'
+
+        step_download = false
+      }
+      if (step_pack) {
+        step_pack_status.style.animation = ''
+        step_pack_status.style.width = '0.75rem'
+        step_pack_status.style.backgroundColor = 'var(--text_color)'
+
+        step_pack = false
+      }
+
+      step_finish_container.style.opacity = '1'
+      step_finish_status.style.backgroundColor = 'var(--text_color)'
+
+      const url = new TextDecoder().decode(buffer)
+
+      progress_text.innerHTML = '100%'
+      progress_result.innerHTML = 'Download'
+      progress_result.href = url
+      progress_bar.style.width = '100%'
+
+      const a = document.createElement('a')
+      a.href = url
+      a.click()
+    }
+  })
 })
 
-socket.addEventListener('message', async event => {
-  const buffer = new Uint8Array(await event.data.arrayBuffer())
+let blured: boolean = true
 
-  /**
-   * 0x00: Start loading the images
-   * 0x01: All images loaded
-   * 0x02: All images zipped, download link
-   * 0x10: Progress
-   * 0x20: Error
-   */
-  switch (buffer[0]) {
-    case 0x00:
-      return addLog('Start loading the images...')
-    case 0x01:
-      return addLog('All images loaded!<br><br>Zipping the images...')
-    case 0x02:
-      addLog('All images zipped!<br><br>Click the button below to download the zip file.')
-      downloadButton.href = new TextDecoder('utf8').decode(buffer.slice(1))
-      downloadButton.download = `${window.location.pathname.split('/')[2]}.zip`
-      downloadButton.innerText = 'Download ZIP'
-      return
-    case 0x10:
-      const [completed, total] = JSON.parse(new TextDecoder('utf8').decode(buffer.slice(1)))
-      return addLog(`Progress: ${completed} / ${total}`)
-    case 0x20:
-      return addLog('Error occurred while downloading the images. Please report this issue to the developer.')
-  }
+image_cover.addEventListener('click', () => {
+  image_cover.style.filter = (blured) ? 'blur(0px)' : 'blur(2.5px)'
+
+  blured = !blured
 })
 
-function addLog(message: string): void {
-  text_logs.innerHTML += '<br>' + message
-  logs.scrollTo(0, logs.scrollHeight)
-}
+image_cover.addEventListener('load', () => {
+  window.scrollTo(0, document.body.scrollHeight);
+})
