@@ -73,7 +73,7 @@ export default (host: string, port: number, apiHost: string, imageHost: string, 
       const response: GalleryData = await nh.get(id) as GalleryData
 
       if (response.error) {
-        await sendPage(res, ErrorPage, { error: 'We cannot find your doujinshi, maybe try going back to <a href="/">home</a> and try another one?' })
+        await sendPage(res, ErrorPage, { error: 'We cannot find this doujinshi, maybe try going back to <a href="/">home</a> and try another one?' })
       } else {
         const extension = response.images.pages[0].t === 'j' ? 'jpg' : response.images.pages[0].t === 'g' ? 'gif' : response.images.pages[0].t === 'w' ? 'webp' : 'png'
         sendPage(res, DownloadPage, { id, title: response.title.english, cover: `${imageHost}/galleries/${response.media_id}/1.${extension}` })
@@ -117,7 +117,7 @@ export default (host: string, port: number, apiHost: string, imageHost: string, 
       await fs.access(stylePath)
       await sendFile(res, stylePath)
     } catch {
-      await sendPage(res, ErrorPage, { error: 'What style do you even want? Something like <a href="/g/228922">this</a>?' })
+      await sendPage(res, ErrorPage, { error: 'What style? You mean <a href="/g/228922">this</a>?' })
     }
   })
 
@@ -128,12 +128,12 @@ export default (host: string, port: number, apiHost: string, imageHost: string, 
       await fs.access(imagePath)
       await sendFile(res, imagePath)
     } catch {
-      await sendPage(res, ErrorPage, { error: 'We cannot find that image :(' })
+      await sendPage(res, ErrorPage, { error: 'The image you\'re trying find does not exist. You probably have some mental disorders, please contact your doctor for professional help.' })
     }
   })
 
   app.get('/error', async (_, res) => {
-    sendPage(res, ErrorPage, { error: 'Don\'t be shy! I know you like <a href="/g/228922">this</a> kind of stuff.' })
+    sendPage(res, ErrorPage, { error: 'Don\'t tell anyone but I got some <a href="/g/228922">good stuff</a> for you :)' })
   })
 
   app.get('/robots.txt', async (_, res) => {
