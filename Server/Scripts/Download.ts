@@ -52,7 +52,7 @@ socket.addEventListener('open', () => {
   let step_download: boolean = false
   let step_pack: boolean = false
 
-  socket.addEventListener('message', async (event) => {
+  socket.addEventListener('message', async event => {
     const raw = await event.data.arrayBuffer()
     const buffer = new Uint8Array(raw)
     const view = new DataView(raw)
@@ -76,10 +76,9 @@ socket.addEventListener('open', () => {
       const completed = view.getUint16(1)
       const total = view.getUint16(3)
 
-      progress_text.innerHTML = `${Math.round(10 + ((80 / total) * completed))}% (${completed} / ${total})`
-      progress_bar.style.width = `${10 + ((80 / total) * completed)}%`
+      progress_text.innerHTML = `${Math.round(10 + (80 / total) * completed)}% (${completed} / ${total})`
+      progress_bar.style.width = `${10 + (80 / total) * completed}%`
     } else if (buffer[0] === 0x01) {
-
     } else if (buffer[0] === 0x10) {
       if (step_download) {
         step_download_status.style.animation = ''
@@ -99,10 +98,9 @@ socket.addEventListener('open', () => {
       const completed = view.getUint16(1)
       const total = view.getUint16(3)
 
-      progress_text.innerHTML = `${Math.round(90 + ((10 / total) * completed))}% (${completed} / ${total})`
-      progress_bar.style.width = `${90 + ((10 / total) * completed)}%`
+      progress_text.innerHTML = `${Math.round(90 + (10 / total) * completed)}% (${completed} / ${total})`
+      progress_bar.style.width = `${90 + (10 / total) * completed}%`
     } else if (buffer[0] === 0x11) {
-
     } else if (buffer[0] === 0x20) {
       if (step_download) {
         step_download_status.style.animation = ''
@@ -139,11 +137,11 @@ socket.addEventListener('open', () => {
 let blured: boolean = true
 
 image_cover.addEventListener('click', () => {
-  image_cover.style.filter = (blured) ? 'blur(0px)' : 'blur(2.5px)'
+  image_cover.style.filter = blured ? 'blur(0px)' : 'blur(2.5px)'
 
   blured = !blured
 })
 
 image_cover.addEventListener('load', () => {
-  window.scrollTo(0, document.body.scrollHeight);
+  window.scrollTo(0, document.body.scrollHeight)
 })

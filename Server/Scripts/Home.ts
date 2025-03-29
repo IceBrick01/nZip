@@ -6,19 +6,12 @@ input_sauce.onchange = () => {
   else if (!isNaN(parseInt(input_sauce.value))) window.location.href = '/g/' + input_sauce.value
 }
 
-let target = 0
+let target = Math.round(Math.random() * 999999)
 let current = 0
 
 setInterval(() => {
   current += (target - current) / 40
   text_sauce.innerHTML = Math.round(current).toString().padStart(6, '0')
+
+  if (Math.abs(target - current) < 0.1) target = Math.round(Math.random() * 999999)
 }, 10)
-
-const socket = new WebSocket(window.location.href)
-
-socket.addEventListener('message', async (event) => {
-  const raw = new Uint8Array(await event.data.arrayBuffer())
-  const buffer = new Uint8Array(raw)
-
-  target = parseInt(new TextDecoder().decode(buffer))
-})

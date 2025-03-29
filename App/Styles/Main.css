@@ -30,7 +30,16 @@ a {
 }
 
 @keyframes flashing {
-  0% { background: var(--background_color); transform: rotate3d(0, 1, 0, 0deg) }
-  50% { background: var(--text_color); transform: rotate3d(0, 1, 0, 180deg) }
-  100% { background: var(--background_color); transform: rotate3d(0, 1, 0, 360deg) }
+  0% {
+    background: var(--background_color);
+    transform: rotate3d(0, 1, 0, 0deg);
+  }
+  50% {
+    background: var(--text_color);
+    transform: rotate3d(0, 1, 0, 180deg);
+  }
+  100% {
+    background: var(--background_color);
+    transform: rotate3d(0, 1, 0, 360deg);
+  }
 }

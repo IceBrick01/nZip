@@ -65,12 +65,12 @@ export default (host: string, port: number, apiHost: string, imageHost: string, 
   app.get('/g/:id', async (req, res) => {
     let id = req.params.id
     if (!Number(id)) {
-      sendPage(res, ErrorPage, { error: 'That\'s not a Number 😭' })
+      sendPage(res, ErrorPage, { error: "That's not a Number 😭" })
       return
     }
 
     try {
-      const response: GalleryData = await nh.get(id) as GalleryData
+      const response: GalleryData = (await nh.get(id)) as GalleryData
 
       if (response.error) {
         await sendPage(res, ErrorPage, { error: 'We cannot find this doujinshi, maybe try going back to <a href="/">home</a> and try another one?' })
@@ -128,7 +128,7 @@ export default (host: string, port: number, apiHost: string, imageHost: string, 
       await fs.access(imagePath)
       await sendFile(res, imagePath)
     } catch {
-      await sendPage(res, ErrorPage, { error: 'The image you\'re trying find does not exist. You probably have some mental disorders, please contact your doctor for professional help.' })
+      await sendPage(res, ErrorPage, { error: "The image you're trying find does not exist. You probably have some mental disorders, please contact your doctor for professional help." })
     }
   })
 

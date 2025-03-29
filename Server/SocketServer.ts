@@ -11,9 +11,6 @@ import Log from '@icebrick/log'
 
 import type { GalleryData } from './Types'
 
-const clients: { [key: symbol]: WebSocket } = {}
-let lastID: number = 0
-
 /**
  * Start the WebSocket server
  * @param httpServer HTTP server
@@ -33,29 +30,12 @@ export default (httpServer: http.Server, apiHost: string, imageHost: string): vo
     const ip = Array.isArray(forwardedFor) ? forwardedFor[0].trim() : forwardedFor?.split(',')[0].trim() || req.socket.remoteAddress || 'unknown'
     const url = req.url
 
-    if (url && (url === '/' || url === '/home')) {
-      const id = Symbol()
-
-      clients[id] = socket
-
-      socket.send(Buffer.from(lastID.toString()))
-      socket.on('close', () => delete clients[id])
-    } else if (url && url.substring(0, 3) === '/g/') {
-      const response: GalleryData = await nh.get(url.substring(3)) as GalleryData
+    if (url && url.substring(0, 3) === '/g/') {
+      const response: GalleryData = (await nh.get(url.substring(3))) as GalleryData
 
       if (response.error) {
         socket.close(404, 'Resource Not Found')
       } else {
-        lastID = response.id
-
-        console.log(Object.getOwnPropertySymbols(clients))
-
-        for (const id of Object.getOwnPropertySymbols(clients)) {
-          console.log(id)
-
-          clients[id].send(Buffer.from(lastID.toString()))
-        }
-
         const hash = crypto.createHash('md5').update(url.substring(3)).update(Date.now().toString()).digest('hex')
 
         Log.info(`WS Download Start: ${response.id} - ${ip}`)
@@ -112,7 +92,7 @@ export default (httpServer: http.Server, apiHost: string, imageHost: string): vo
  * @param filename Filename of the zip file
  */
 async function download(images: string[], hash: string, socket: WebSocket, filename: string): Promise<boolean> {
-  return new Promise(async (resolve, reject) => {
+  return new Promise(async (resolve, _) => {
     const urlCount = images.length
     const concurrentDownloads = Math.min(urlCount, 16)
 
@@ -176,7 +156,7 @@ async function download(images: string[], hash: string, socket: WebSocket, filen
 
         fs.rmSync(path.join(__dirname, 'Cache', 'Downloads', hash), { recursive: true })
       }
-    } 
+    }
   })
 }
 
