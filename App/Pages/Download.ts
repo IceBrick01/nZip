@@ -23,7 +23,7 @@ export default (args: { id: string, title: string, cover: string }) => {
             new Element('div', { class: 'progress-container', style: { flex: '1', display: 'flex', flexDirection: 'column', center: 'horizontal vertical' } }, [
               new Element('div', { style: { marginBottom: '5rem' } }, [
                 new Element('div', { id: 'step-connect-container', style: { display: 'flex', center: 'vertical', marginBottom: '0.5rem', opacity: '1', transition: 'opacity 0.5s' } }, [
-                  new Element('div', { id: 'step-connect-status', style: { border: '0.1rem solid $text_color', borderRadius: '100%', width: '0.6rem', height: '0.75rem', marginRight: '1rem', animation: '1s flashing infinite' } }),
+                  new Element('div', { id: 'step-connect-status', style: { border: '0.1rem solid $text_color', borderRadius: '100%', width: '0.75rem', height: '0.75rem', marginRight: '1rem', animation: '1s flashing infinite' } }),
                   new Element('h1', { class: 'text', innerHTML: 'Connecting to the server...', style: { fontSize: '1.25rem' } })
                 ]),
                 new Element('div', { id: 'step-download-container', style: { display: 'flex', center: 'vertical', marginBottom: '0.5rem', opacity: '0.25', transition: 'opacity 0.5s' } }, [
@@ -42,7 +42,7 @@ export default (args: { id: string, title: string, cover: string }) => {
               new Element('div', { style: { width: '75% + (5rem - 2vw)' } }, [
                 new Element('div', { style: { display: 'flex', marginBottom: '0.5rem' } }, [
                   new Element('h1', { id: 'progress-text', class: 'text', innerHTML: '0%', style: { flex: '1', fontSize: '1.25rem' } }),
-                  new Element('a', { id: 'progress-result', class: 'text', innerHTML: '', style: { fontSize: '1.25rem' } }),
+                  new Element('a', { id: 'progress-result', class: 'text', innerHTML: 'Download', style: { fontSize: '1.25rem', transition: 'opacity 0.5s', opacity: '0' } }),
                 ]),
                 new Element('div', { style: { backgroundColor: 'color-mix(in srgb, $text_color, $background_color 85%)', borderRadius: '1rem', width: '100%', height: '0.3rem', overflow: 'hidden' } }, [
                   new Element('div', { id: 'progress-bar', style: { backgroundColor: '$text_color', width: '0%', height: '100%', transition: 'width 0.5s' } })

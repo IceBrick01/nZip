@@ -82,7 +82,6 @@ socket.addEventListener('open', () => {
     } else if (buffer[0] === 0x10) {
       if (step_download) {
         step_download_status.style.animation = ''
-        step_download_status.style.width = '0.75rem'
         step_download_status.style.backgroundColor = 'var(--text_color)'
 
         step_download = false
@@ -104,14 +103,12 @@ socket.addEventListener('open', () => {
     } else if (buffer[0] === 0x20) {
       if (step_download) {
         step_download_status.style.animation = ''
-        step_download_status.style.width = '0.75rem'
         step_download_status.style.backgroundColor = 'var(--text_color)'
 
         step_download = false
       }
       if (step_pack) {
         step_pack_status.style.animation = ''
-        step_pack_status.style.width = '0.75rem'
         step_pack_status.style.backgroundColor = 'var(--text_color)'
 
         step_pack = false
@@ -123,8 +120,8 @@ socket.addEventListener('open', () => {
       const url = new TextDecoder().decode(buffer)
 
       progress_text.innerHTML = '100%'
-      progress_result.innerHTML = 'Download'
       progress_result.href = url
+      progress_result.style.opacity = '1'
       progress_bar.style.width = '100%'
 
       const a = document.createElement('a')
