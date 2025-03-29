@@ -98,7 +98,7 @@ socket.addEventListener('open', () => {
       const completed = view.getUint16(1)
       const total = view.getUint16(3)
 
-      progress_text.innerHTML = `${Math.round(90 + (10 / total) * completed)}% (${completed} / ${total})`
+      progress_text.innerHTML = `${Math.round(90 + (10 / total) * completed)}%` // Not implemented: (${completed} / ${total})
       progress_bar.style.width = `${90 + (10 / total) * completed}%`
     } else if (buffer[0] === 0x11) {
     } else if (buffer[0] === 0x20) {
