@@ -4,7 +4,6 @@ nZip is a convenient tool for downloading doujinshi from nhentai.net as a zip ar
 
 > [!WARNING]
 > This project is not affiliated with or endorsed by nhentai.net. Please use it responsibly.
-> The logo is copyrighted by nhentai.net.
 > This project is intended for educational purposes only and should not be used for any other purposes.
 
 ## How to Use
