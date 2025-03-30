@@ -22,7 +22,8 @@ export default () => {
         new Element('p', { class: 'text', innerHTML: 'We do not share or sell any collected data to third parties.' })
       ]),
       new Element('div', { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', width: '90dvw', marginTop: '1rem' } }, [
-        new Element('p', { class: 'text', innerHTML: 'By using nZip, you acknowledge that you have read and understood <a href="/terms">Terms of Service</a> and this Privacy Policy document. If you do not agree with these terms, please refrain from using the service.' })
+        new Element('p', { class: 'text', innerHTML: 'By using nZip, you acknowledge that you have read and understood <a href="/terms">Terms of Service</a> and this Privacy Policy document. If you do not agree with these terms, please refrain from using the service.' }),
+        new Element('p', { class: 'text', style: { marginTop: '1rem' }, innerHTML: 'If you have any questions or concerns about these terms, please contact us at contact [at] nhentai [dot] zip.' })
       ]),
       new Element('div', { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', width: '90dvw', marginTop: '1rem' } }, [
         new Element('a', { class: 'text', href: 'javascript:history.back()', innerHTML: 'Back' })

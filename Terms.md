@@ -31,3 +31,5 @@ We value your privacy and are committed to being transparent about the data we c
    - We do not share or sell any collected data to third parties.
 
 By using nZip, you acknowledge that you have read and understood this Terms of Service and Privacy Policy document. If you do not agree with these terms, please refrain from using the service.
+
+If you have any questions or concerns about these terms, please contact us at contact [at] nhentai [dot] zip.
