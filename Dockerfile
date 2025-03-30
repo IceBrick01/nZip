@@ -8,8 +8,8 @@ RUN sh build-docker.sh
 
 FROM oven/bun:alpine
 
-LABEL org.opencontainers.image.url="https://ghcr.io/icebrick01/nzip"
-LABEL org.opencontainers.image.source="https://github.com/IceBrick01/nZip"
+LABEL org.opencontainers.image.url="https://ghcr.io/nzip-team/nzip"
+LABEL org.opencontainers.image.source="https://github.com/nZip-Team/nZip"
 LABEL org.opencontainers.image.title="nZip"
 LABEL org.opencontainers.image.description="Download doujinshis from nhentai.net as a zip archive."
 LABEL org.opencontainers.image.version="1.7.0"

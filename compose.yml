@@ -1,7 +1,7 @@
 services:
   nzip-server:
     container_name: nzip-server
-    image: ghcr.io/icebrick01/nzip:latest
+    image: ghcr.io/nzip-team/nzip:latest
     ports:
       - '3000:3000'
     environment:

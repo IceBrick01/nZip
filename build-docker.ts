@@ -17,8 +17,8 @@ async function updateDockerfile(version: string): Promise<void> {
 }
 
 async function buildDockerImage(version: string): Promise<void> {
-  const imageName = `ghcr.io/icebrick01/nzip:${version}`
-  const tags = [`ghcr.io/icebrick01/nzip:latest`, `ghcr.io/icebrick01/nzip:${version.split('.')[0]}`, `ghcr.io/icebrick01/nzip:${version.split('.').slice(0, 2).join('.')}`]
+  const imageName = `ghcr.io/nzip-team/nzip:${version}`
+  const tags = [`ghcr.io/nzip-team/nzip:latest`, `ghcr.io/nzip-team/nzip:${version.split('.')[0]}`, `ghcr.io/nzip-team/nzip:${version.split('.').slice(0, 2).join('.')}`]
 
   Log.info('Updating Dockerfile...')
   await updateDockerfile(version)

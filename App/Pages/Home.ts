@@ -36,7 +36,7 @@ export default (args: { version: string }) => {
         ]),
         new Element('div', { style: { flex: '1' } }),
         new Element('h1', { class: 'text', style: { fontSize: '1rem', whiteSpace: 'nowrap', marginRight: '1rem' } }, [
-          new Element('a', { href: 'https://github.com/IceBrick01/nZip', target: '_blank', innerHTML: `nZip ${args.version}` })
+          new Element('a', { href: 'https://github.com/nZip-Team/nZip', target: '_blank', innerHTML: `nZip ${args.version}` })
         ])
       ]),
       new Element('script', { src: '/Scripts/Home.mjs' })

@@ -31,7 +31,7 @@ wget -qO- https://get.docker.com | bash
 Next, clone the repository and navigate to the project directory:
 
 ```bash
-git clone https://github.com/IceBrick01/nZip.git
+git clone https://github.com/nZip-Team/nZip.git
 cd nZip
 ```
 
