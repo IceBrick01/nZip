@@ -29,7 +29,7 @@ export default (args: { version: string }) => {
       new Element('div', { style: { position: 'fixed', display: 'flex', fontSize: '1rem', bottom: '0.6rem', width: '100dvw' } }, [
         new Element('div', { style: { display: 'flex', center: 'vertical', gap: '0.5rem', marginLeft: '1rem', marginRight: '1rem' } }, [
           new Element('h1', { class: 'text', style: { fontSize: '1rem' }, innerHTML: 'Made by' }),
-          new Element('a', { class: 'text', href: 'https://github.com/IceBrick01', target: '_blank', innerHTML: 'IceBrick', style: { fontSize: '1rem', fontWeight: 'bold' } }),
+          new Element('a', { class: 'text', href: 'https://github.com/noticebrick', target: '_blank', innerHTML: 'IceBrick', style: { fontSize: '1rem', fontWeight: 'bold' } }),
           new Element('h1', { class: 'text', innerHTML: 'and', style: { fontSize: '1rem' } }),
           new Element('a', { class: 'text', href: 'https://github.com/LmanTW', target: '_blank', innerHTML: 'LmanTW', style: { fontSize: '1rem', fontWeight: 'bold' } }),
           new Element('h1', { class: 'text', innerHTML: 'with ❤️', style: { fontSize: '1rem' } })
